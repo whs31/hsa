@@ -68,7 +68,7 @@ namespace HSA
     for(usize i = 0; const auto& [key, value] : m_values)
     {
       auto str = holds_alternative<string>(value) ? std::get<string>(value) : std::to_string(std::get<u16>(value));
-      cout << "Added key" << EnumerationDictionary.at(key) << "with value" << str << endl;
+      cout << "Added key " << EnumerationDictionary.at(key) << " with value " << str << endl;
       ofs << "\t\"" << EnumerationDictionary.at(key) << "\": \"" << str << "\"";
       if(i != m_values.size() - 1)
         ofs << ",";
@@ -85,7 +85,7 @@ namespace HSA
   void Config::load() noexcept
   {
     fs::path path = fs::current_path() / CFG_FILENAME;
-    cout << "Loading settings from" << CFG_FILENAME << endl;
+    cout << "Loading settings from " << CFG_FILENAME << endl;
     std::ifstream ifs(path);
     string line_buffer;
     while(std::getline(ifs, line_buffer))
@@ -94,9 +94,18 @@ namespace HSA
       if(semicolon == string::npos)
         continue;
       string key = line_buffer.substr(0, semicolon);
-      string value = line_buffer.substr(semicolon + 1, line_buffer.size());
-      cout << key << endl;
-      cout << value << endl;
+      auto is_json_junk = [](char c){ return isspace(c) or c == '"' or c == ','; };
+      auto is_digit = [](char c){ return isdigit(c); };
+      key.erase(std::remove_if(key.begin(), key.end(), is_json_junk), key.end());
+      string value_str = line_buffer.substr(semicolon + 1, line_buffer.size());
+      value_str.erase(std::remove_if(value_str.begin(), value_str.end(), is_json_junk), value_str.end());
+      variant<string, u16> value;
+      if(std::all_of(value_str.cbegin(), value_str.cend(), is_digit))
+        value = static_cast<u16>(std::stoi(value_str));
+      else
+        value = value_str;
+      m_values[EnumerationInverseDictionary.at(key)] = value;
+      cout << "Loaded key (" << key << "), value (" << value_str << ")" << endl;
     }
   }
 } // HSA
