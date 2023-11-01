@@ -6,7 +6,6 @@ variables:
 include:
   - local: /.gitlab/alse.yml
   - local: /.gitlab/win64.yml
-  - local: /.gitlab/doxygen.yml
 
 stages:
   - build

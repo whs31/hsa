@@ -1,0 +1,3 @@
+[submodule "libs/libra"]
+	path = libs/libra
+	url = ../../qtex/libra.git
