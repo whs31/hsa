@@ -6,10 +6,10 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
-#include <format>
-#include "def.h"
 
 namespace fs = std::filesystem;
+using std::cout;
+using std::endl;
 
 namespace HSA
 {
@@ -47,7 +47,7 @@ namespace HSA
     m_values[VT45IPv4] = "192.168.0.13"s;
     m_values[VT45Port] = 4556_u16;
     m_values[VT45ListenPort] = 4557_u16;
-    printLn("Config file was reset");
+    cout << "Config file was reset" << endl;
   }
 
   auto Config::create() noexcept -> bool
@@ -55,7 +55,7 @@ namespace HSA
     fs::path path = fs::current_path() / CFG_FILENAME;
     if(exists(path))
     {
-      printLn("File exists, loading settings");
+      cout << "File exists, loading settings" << endl;
       this->load();
       return true;
     }
@@ -68,8 +68,8 @@ namespace HSA
     for(usize i = 0; const auto& [key, value] : m_values)
     {
       auto str = holds_alternative<string>(value) ? std::get<string>(value) : std::to_string(std::get<u16>(value));
-      printLn("Added key {} with value {}", EnumerationDictionary.at(key), str);
-      ofs << std::format("\t\"{}\": \"{}\"", EnumerationDictionary.at(key), str);
+      cout << "Added key" << EnumerationDictionary.at(key) << "with value" << str << endl;
+      ofs << "\t\"" << EnumerationDictionary.at(key) << "\": \"" << str << "\"";
       if(i != m_values.size() - 1)
         ofs << ",";
       ofs << "\n";
@@ -77,7 +77,7 @@ namespace HSA
     }
     ofs << "}\n";
     ofs.close();
-    printLn("Settings file filled");
+    cout << "Settings file filled" << endl;
     this->load();
     return true;
   }
@@ -85,7 +85,7 @@ namespace HSA
   void Config::load() noexcept
   {
     fs::path path = fs::current_path() / CFG_FILENAME;
-    printLn("Loading settings from {}", CFG_FILENAME);
+    cout << "Loading settings from" << CFG_FILENAME << endl;
     std::ifstream ifs(path);
     string line_buffer;
     while(std::getline(ifs, line_buffer))
@@ -95,7 +95,8 @@ namespace HSA
         continue;
       string key = line_buffer.substr(0, semicolon);
       string value = line_buffer.substr(semicolon + 1, line_buffer.size());
-      printLn("key={}, value={}", key, value);
+      cout << key << endl;
+      cout << value << endl;
     }
   }
 } // HSA

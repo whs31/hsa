@@ -7,7 +7,7 @@ project(HSA
   LANGUAGES CXX C
 )
 
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 23)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 set(CMAKE_AUTORCC ON)
@@ -24,7 +24,6 @@ add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME}
   PRIVATE
     src/c++/main.c++
-    src/c++/def.h
     src/c++/config.h
     src/c++/config.c++
 )
