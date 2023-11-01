@@ -2,6 +2,6 @@ astra linux special edition:
   stage: build
   tags: [alse]
   script:
-    - cmake -GNinja && ninja
+    - cmake-alse -GNinja && ninja
 
 
