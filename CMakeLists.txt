@@ -24,6 +24,9 @@ add_executable(${PROJECT_NAME})
 target_sources(${PROJECT_NAME}
   PRIVATE
     src/c++/main.c++
+    src/c++/def.h
+    src/c++/config.h
+    src/c++/config.c++
 )
 
 set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)
