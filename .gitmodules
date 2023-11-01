@@ -1,3 +1,6 @@
 [submodule "libs/libra"]
 	path = libs/libra
 	url = ../../qtex/libra.git
+[submodule "libs/3rd-party/vt45-protocol"]
+	path = libs/3rd-party/vt45-protocol
+	url = ../../../autopilot/protocol/vt45.git
