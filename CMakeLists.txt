@@ -31,11 +31,14 @@ target_sources(${PROJECT_NAME}
 set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)
 add_subdirectory(libs/libra)
 
+add_subdirectory(libs/3rd-party/vt45-protocol)
+
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
     Qt5::Core
     Qt5::Network
     Libra
+    vt45
 )
 
 target_include_directories(${PROJECT_NAME}
