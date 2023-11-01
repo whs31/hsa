@@ -63,7 +63,7 @@ namespace HSA
     std::ofstream ofs(path);
 
     this->reset();
-    printLn("Filling settings file");
+    cout << "Filling settings file" << endl;
     ofs << "{\n";
     for(usize i = 0; const auto& [key, value] : m_values)
     {
