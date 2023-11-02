@@ -28,7 +28,6 @@ target_sources(${PROJECT_NAME}
     src/c++/config.c++
     src/c++/protocolparser.h
     src/c++/protocolparser.c++
-    src/c++/protocolparser_callbacks.c++
     src/c++/adapter.h
     src/c++/adapter.c++
     src/c++/socket.h
