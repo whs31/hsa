@@ -13,6 +13,11 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
+namespace callbacks
+{
+  
+}
+
 namespace HSA
 {
   ProtocolParser::ProtocolParser()
