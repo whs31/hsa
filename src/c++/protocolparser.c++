@@ -8,6 +8,7 @@
 #include <iostream>
 #include "protocolparser.h"
 #include "datagram.h"
+#include <vt45-params.h>
 
 using std::cout;
 using std::cerr;
@@ -18,7 +19,20 @@ using std::endl;
 namespace callbacks
 {
   void core_ack(ruavp_protocol_data, const core_ack_t* d) {}
-  void core_param(ruavp_protocol_data, const core_param_t* d) {}
+
+  void core_param(ruavp_protocol_data, const core_param_t* d)
+  {
+    cout << "asd" << endl;
+    if(p == nullptr)
+      return;
+    auto self = static_cast<HSA::ProtocolParser*>(p->user);
+    if(d->id == PARAM_HELINAME)
+      self->datagram()->metadata = {
+          .id = static_cast<u8>(d->id),
+          .name = string(reinterpret_cast<const char*>(d->data))
+      };
+  }
+
   void core_message(ruavp_protocol_data, const core_message_t* d) {}
   void helihw_tenso(ruavp_protocol_data, const helihw_tenso_t* d) {}
   void navio_telemetry(ruavp_protocol_data, const navio_telemetry_t* d) {}
