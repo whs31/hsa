@@ -14,6 +14,7 @@ namespace HSA
 {
   class Config;
   class Socket;
+  class ProtocolParser;
   class Adapter
   {
     public:
@@ -22,6 +23,7 @@ namespace HSA
 
       [[nodiscard]] Config* config() const;
       [[nodiscard]] Socket* socket() const;
+      [[nodiscard]] ProtocolParser* parser() const;
 
     private:
       void socketRead(string data);
@@ -29,6 +31,7 @@ namespace HSA
     private:
       unique_ptr<Config> m_config;
       unique_ptr<Socket> m_socket;
+      unique_ptr<ProtocolParser> m_protocol_parser;
   };
 } // HSA
 

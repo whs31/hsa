@@ -7,6 +7,7 @@
 #include <functional>
 #include "config.h"
 #include "socket.h"
+#include "protocolparser.h"
 
 using std::cout;
 using std::endl;
@@ -16,6 +17,7 @@ namespace HSA
   Adapter::Adapter()
     : m_config(std::make_unique<Config>())
     , m_socket(std::make_unique<Socket>([this](auto&& PH1){ socketRead(std::forward<decltype(PH1)>(PH1)); }))
+    , m_protocol_parser(std::make_unique<ProtocolParser>())
   {
     if(not config()->value(Config::VT45ListenPort))
     {
@@ -37,9 +39,11 @@ namespace HSA
 
   Config* Adapter::config() const { return m_config.get(); }
   Socket* Adapter::socket() const { return m_socket.get(); }
+  ProtocolParser* Adapter::parser() const { return m_protocol_parser.get(); }
 
   void Adapter::socketRead(string data)
   {
-    //cout << "data: " << data << endl;
+    cout << "x ";
+    parser()->decode(data);
   }
 } // HSA

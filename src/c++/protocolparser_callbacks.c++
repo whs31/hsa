@@ -3,12 +3,15 @@
 //
 
 #include "protocolparser.h"
+#include "datagram.h"
 
 namespace HSA
 {
   void ProtocolParser::callback_core_ack_t(const core_ack_t* packet) noexcept
   {
-
+    // ignore it for now
+    // @todo make something with it
+    (void)packet;
   }
 
   void ProtocolParser::callback_core_param_t(const core_param_t* packet) noexcept

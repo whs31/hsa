@@ -9,12 +9,14 @@
 
 #include <string>
 #include <functional>
+#include <memory>
 #include <vt45.h>
 #include <Libra/Global>
 
 #define callback_process(T) callback_##T(const T* packet)
 
 using std::string;
+using std::unique_ptr;
 
 namespace RUAVP
 {
@@ -24,10 +26,14 @@ namespace RUAVP
 
 namespace HSA
 {
+  struct Datagram;
   class ProtocolParser
   {
     public:
       ProtocolParser();
+      ~ProtocolParser();
+
+      [[nodiscard]] Datagram* datagram() const;
 
       void decode(const string& data);
 
@@ -58,5 +64,6 @@ namespace HSA
 
     private:
       ruavp_protocol_t m_protocol;
+      unique_ptr<Datagram> m_datagram;
   };
 } // HSA

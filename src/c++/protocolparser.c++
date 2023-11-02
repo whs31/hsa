@@ -6,15 +6,21 @@
   */
 
 #include "protocolparser.h"
+#include "datagram.h"
 
-#define callback_declaration(T) [this](ruavp_protocol_t* p, const ruavp_header_t* h, const T* d) { this->callback_##T(d); }
+#define callback_declaration(T) [this](ruavp_protocol_t* p, const ruavp_header_t* h, const T* d)                       \
+                                { (void)p; (void)h; this->callback_##T(d); }
 
 namespace HSA
 {
   ProtocolParser::ProtocolParser()
+    : m_datagram(std::make_unique<Datagram>())
   {
     this->registerCallbacks();
   }
+
+  ProtocolParser::~ProtocolParser() = default;
+  Datagram* ProtocolParser::datagram() const { return m_datagram.get(); }
 
   void ProtocolParser::decode(const string& data)
   {
