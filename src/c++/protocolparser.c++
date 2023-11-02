@@ -22,7 +22,6 @@ namespace callbacks
 
   void core_param(ruavp_protocol_data, const core_param_t* d)
   {
-    cout << "asd" << endl;
     if(p == nullptr)
       return;
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
