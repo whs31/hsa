@@ -5,7 +5,9 @@
 #pragma once
 
 #include <memory>
+#include <string>
 
+using std::string;
 using std::unique_ptr;
 
 namespace HSA
@@ -20,6 +22,9 @@ namespace HSA
 
       [[nodiscard]] Config* config() const;
       [[nodiscard]] Socket* socket() const;
+
+    private:
+      void socketRead(string data);
 
     private:
       unique_ptr<Config> m_config;

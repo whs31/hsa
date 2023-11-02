@@ -4,6 +4,7 @@
 
 #include "adapter.h"
 #include <iostream>
+#include <functional>
 #include "config.h"
 #include "socket.h"
 
@@ -14,17 +15,17 @@ namespace HSA
 {
   Adapter::Adapter()
     : m_config(std::make_unique<Config>())
-    , m_socket(std::make_unique<Socket>())
+    , m_socket(std::make_unique<Socket>([this](auto&& PH1){ socketRead(std::forward<decltype(PH1)>(PH1)); }))
   {
     if(not config()->value(Config::VT45ListenPort))
     {
-      cout << "Error fetching listen port from config";
+      cout << "Error fetching listen port from config" << endl;
       return;
     }
 
     if(not config()->value(Config::VT45MulticastGroup))
     {
-      cout << "Error fetching multicast group from config";
+      cout << "Error fetching multicast group from config" << endl;
       return;
     }
 
@@ -36,4 +37,9 @@ namespace HSA
 
   Config* Adapter::config() const { return m_config.get(); }
   Socket* Adapter::socket() const { return m_socket.get(); }
+
+  void Adapter::socketRead(string data)
+  {
+    cout << "data: " << data << endl;
+  }
 } // HSA

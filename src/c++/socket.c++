@@ -5,15 +5,17 @@
 #include "socket.h"
 #include <iostream>
 #include <QtNetwork/QUdpSocket>
+#include <utility>
 
 using std::cout;
 using std::endl;
 
 namespace HSA
 {
-  Socket::Socket()
+  Socket::Socket(SocketReceiveCallback callback)
     : m_socket(std::make_unique<QUdpSocket>())
     , m_port(25565)
+    , m_callback(std::move(callback))
   {
     Qt::Object::connect(m_socket.get(), &QUdpSocket::readyRead, [this](){ this->read(); });
   }
@@ -51,12 +53,11 @@ namespace HSA
 
   void Socket::read() noexcept
   {
-    QByteArray buffer(static_cast<isize>(m_socket->pendingDatagramSize()), 0x0);
+    Qt::ByteArray buffer(static_cast<isize>(m_socket->pendingDatagramSize()), 0x0);
     QHostAddress host;
     u16 port;
     while(m_socket->hasPendingDatagrams())
       m_socket->readDatagram(buffer.data(), buffer.size(), &host, &port);
-    //emit received(buffer);
-    cout << "read" << host.toString().toStdString() << " " << port <<  endl;
+    m_callback(buffer.toStdString());
   }
 } // HSA

@@ -6,6 +6,7 @@
 
 #include <string>
 #include <memory>
+#include <functional>
 #include <Libra/Global>
 
 using std::string;
@@ -18,7 +19,9 @@ namespace HSA
   class Socket
   {
     public:
-      Socket();
+      using SocketReceiveCallback = std::function<void(string data)>;
+
+      explicit Socket(SocketReceiveCallback callback);
       ~Socket();
 
       void start(u16 port) noexcept;
@@ -32,6 +35,7 @@ namespace HSA
     private:
       unique_ptr<QUdpSocket> m_socket;
       u16 m_port;
+      SocketReceiveCallback m_callback;
   };
 } // HSA
 
