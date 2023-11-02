@@ -40,6 +40,6 @@ namespace HSA
 
   void Adapter::socketRead(string data)
   {
-    cout << "data: " << data << endl;
+    //cout << "data: " << data << endl;
   }
 } // HSA
