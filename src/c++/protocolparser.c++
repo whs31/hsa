@@ -8,7 +8,7 @@
 #include <iostream>
 #include "protocolparser.h"
 #include "datagram.h"
-#include <vt45-params.h>
+#include "parameters.h"
 
 using std::cout;
 using std::cerr;
@@ -26,7 +26,7 @@ namespace callbacks
     if(p == nullptr)
       return;
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
-    if(d->id == PARAM_HELINAME)
+    if(d->id == HSA::Parameters::HelicopterName)
       self->datagram()->metadata = {
           .id = static_cast<u8>(d->id),
           .name = string(reinterpret_cast<const char*>(d->data))

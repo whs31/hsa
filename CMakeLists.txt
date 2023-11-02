@@ -33,6 +33,7 @@ target_sources(${PROJECT_NAME}
     src/c++/socket.h
     src/c++/socket.c++
     src/c++/datagram.h
+    src/c++/parameters.h
 )
 
 set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)
