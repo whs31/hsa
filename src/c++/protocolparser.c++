@@ -18,11 +18,13 @@ using std::endl;
 
 namespace callbacks
 {
+  [[maybe_unused]] ruavp::utility::error_function ErrorFunction = [](){ cerr << "Invalid pointer received!" << endl; };
+
   /* void core_ack(ruavp_protocol_data, const core_ack_t* d) {} */
 
   void core_param(ruavp_protocol_data, const core_param_t* d)
   {
-    if(any_of_pointers_invalid(p, h, d))
+    if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
     if(d->id == to_underlying(HSA::VT45Parameter::HelicopterName))
@@ -38,9 +40,9 @@ namespace callbacks
 
   void heli_telemetry(ruavp_protocol_data, const heli_telemetry_t* d)
   {
-    if(any_of_pointers_invalid(p, h, d))
+    if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
-    if(not (h->source bitand to_underlying(HSA::VT45Class::Heli)))\
+    if(not (h->source bitand to_underlying(HSA::VT45Class::Heli)))
       return;
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
     /*

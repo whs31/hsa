@@ -38,8 +38,22 @@ namespace HSA
   };
 } // HSA
 
-template<typename T>
-auto any_of_pointers_invalid(ruavp_protocol_t* a, const ruavp_header_t* b, const T* c) -> bool
+namespace ruavp::utility
 {
-  return ((a == nullptr) or (b == nullptr) or (c == nullptr));
-}
+  using error_function = std::function<void (void)>;
+
+  template<typename T>
+  auto any_of_pointers_invalid(ruavp_protocol_t* a, const ruavp_header_t* b, const T* c) -> bool
+  {
+    return ((a == nullptr) or (b == nullptr) or (c == nullptr));
+  }
+
+  template<typename T>
+  auto any_of_pointers_invalid_signaling(ruavp_protocol_t* a, const ruavp_header_t* b, const T* c, error_function f) -> bool
+  {
+    auto is_error = any_of_pointers_invalid(a, b, c);
+    if(is_error)
+      f();
+    return is_error;
+  }
+} // ruavp::utility
