@@ -37,3 +37,9 @@ namespace HSA
       unique_ptr<Datagram> m_datagram;
   };
 } // HSA
+
+template<typename T>
+auto any_of_pointers_invalid(ruavp_protocol_t* a, const ruavp_header_t* b, const T* c) -> bool
+{
+  return ((a == nullptr) or (b == nullptr) or (c == nullptr));
+}

@@ -18,11 +18,11 @@ using std::endl;
 
 namespace callbacks
 {
-  void core_ack(ruavp_protocol_data, const core_ack_t* d) {}
+  /* void core_ack(ruavp_protocol_data, const core_ack_t* d) {} */
 
   void core_param(ruavp_protocol_data, const core_param_t* d)
   {
-    if(p == nullptr)
+    if(any_of_pointers_invalid(p, h, d))
       return;
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
     if(d->id == to_underlying(HSA::VT45Parameter::HelicopterName))
@@ -32,10 +32,62 @@ namespace callbacks
       };
   }
 
-  void core_message(ruavp_protocol_data, const core_message_t* d) {}
+  /* void core_message(ruavp_protocol_data, const core_message_t* d) {} */
   void helihw_tenso(ruavp_protocol_data, const helihw_tenso_t* d) {}
   void navio_telemetry(ruavp_protocol_data, const navio_telemetry_t* d) {}
-  void heli_telemetry(ruavp_protocol_data, const heli_telemetry_t* d) {}
+
+  void heli_telemetry(ruavp_protocol_data, const heli_telemetry_t* d)
+  {
+    if(any_of_pointers_invalid(p, h, d))
+      return;
+    if(not (h->source bitand to_underlying(HSA::VT45Class::Heli)))\
+      return;
+    auto self = static_cast<HSA::ProtocolParser*>(p->user);
+    /*
+     * QString uavName = core->m_uavNames[uavId];
+     * if (!uavName.size())
+     *     core->sendGetParam(uavId, PARAM_HELINAME);
+     */
+
+    // @todo check for counters (atomic!)
+    self->datagram()->telemetry = {
+        .latitude = d->latitude,
+        .longitude = d->longitude,
+        .latitude_d = d->dlatitude,
+        .longitude_d = d->longitude,
+        .altitude = d->altitude,
+        .altitude_abs = d->altitude_abs,
+        .altitude_d = d->daltitude,
+        .timestamp = d->ts,
+        .acceleration_x = d->ax,
+        .acceleration_y = d->ay,
+        .acceleration_z = d->az,
+        .col_pitch = d->colpitch,
+        .pitch = d->pitch,
+        .roll = d->roll,
+        .yaw = d->yaw,
+        .target_altitude = d->target_altitude,
+        .target_speed = d->target_speed,
+        .throttle = d->throttle,
+        .vx = d->vx,
+        .vy = d->vy,
+        .vz = d->vz,
+        .route_point = d->route_point,
+        .route = d->route,
+        .rpm_engine = d->rpm_engine,
+        .rpm_engine2 = d->rpm_engine,
+        .rpm_rotor = d->rpm_rotor,
+        .rpm_tail = d->rpm_tail,
+        .engine_state = d->engine_state,
+        .mode = d->mode,
+        .overriders_state = d->overriders_state,
+        .override_altitude = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::Altitude)))),
+        .override_velocity = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::Speed)))),
+        .override_yaw = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::Yaw)))),
+        .override_vz = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::VZ))))
+    };
+  }
+
   void heli_route(ruavp_protocol_data, const heli_route_t* d) {}
   void heli_route_point(ruavp_protocol_data, const heli_route_point_t* d) {}
   void heli_status(ruavp_protocol_data, const heli_status_t* d) {}
@@ -70,20 +122,8 @@ namespace HSA
   {
     m_protocol = {
         .user = this,
-        .process_core_ack = +[](ruavp_protocol_t* p, const ruavp_header_t* h, const core_ack_t* d){
-          callbacks::core_ack(
-              std::forward<decltype(p)>(p),
-              std::forward<decltype(h)>(h),
-              std::forward<decltype(d)>(d));
-          },
         .process_core_param = +[](ruavp_protocol_t* p, const ruavp_header_t* h, const core_param_t* d){
           callbacks::core_param(
-              std::forward<decltype(p)>(p),
-              std::forward<decltype(h)>(h),
-              std::forward<decltype(d)>(d));
-          },
-        .process_core_message = +[](ruavp_protocol_t* p, const ruavp_header_t* h, const core_message_t* d){
-          callbacks::core_message(
               std::forward<decltype(p)>(p),
               std::forward<decltype(h)>(h),
               std::forward<decltype(d)>(d));
