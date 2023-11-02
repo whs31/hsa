@@ -10,14 +10,14 @@ project(HSA
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOMOC ON)
-
-find_package(QT NAMES Qt5 COMPONENTS Core)
-find_package(Qt5 COMPONENTS
+find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
   Core
   Network
 )
+
+set(CMAKE_AUTORCC ON)
+set(CMAKE_AUTOMOC ON)
 
 add_executable(${PROJECT_NAME})
 
@@ -34,6 +34,7 @@ target_sources(${PROJECT_NAME}
     src/c++/socket.c++
     src/c++/datagram.h
     src/c++/parameters.h
+    src/c++/enumutils.h
 )
 
 set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)
@@ -44,8 +45,9 @@ add_subdirectory(libs/3rd-party/bimap)
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
-    Qt5::Core
-    Qt5::Network
+    Qt${QT_VERSION_MAJOR}::Core
+    Qt${QT_VERSION_MAJOR}::Network
+
     Libra
     vt45
     BidirectionalMap

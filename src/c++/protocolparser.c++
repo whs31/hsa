@@ -26,7 +26,7 @@ namespace callbacks
     if(p == nullptr)
       return;
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
-    if(d->id == HSA::Parameters::HelicopterName)
+    if(d->id == to_underlying(HSA::VT45Parameter::HelicopterName))
       self->datagram()->metadata = {
           .id = static_cast<u8>(d->id),
           .name = string(reinterpret_cast<const char*>(d->data))
