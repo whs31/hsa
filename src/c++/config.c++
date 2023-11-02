@@ -16,13 +16,15 @@ namespace HSA
   const map<Config::ConfigKey, string> EnumerationDictionary = {
     { Config::ConfigKey::VT45IPv4, "vt45_ip" },
     { Config::ConfigKey::VT45Port, "vt45_port" },
-    { Config::ConfigKey::VT45ListenPort, "vt45_listen_port" }
+    { Config::ConfigKey::VT45ListenPort, "vt45_listen_port" },
+    { Config::ConfigKey::VT45MulticastGroup, "vt45_multicast_group" },
   };
 
   const map<string, Config::ConfigKey> EnumerationInverseDictionary = {
     { "vt45_ip", Config::ConfigKey::VT45IPv4 },
     { "vt45_port", Config::ConfigKey::VT45Port },
-    { "vt45_listen_port", Config::ConfigKey::VT45ListenPort }
+    { "vt45_listen_port", Config::ConfigKey::VT45ListenPort },
+    { "vt45_multicast_group", Config::ConfigKey::VT45MulticastGroup }
   };
 
   constexpr const char* CFG_FILENAME = "cfg.json";
@@ -47,6 +49,7 @@ namespace HSA
     m_values[VT45IPv4] = "192.168.0.13"s;
     m_values[VT45Port] = 4556_u16;
     m_values[VT45ListenPort] = 4557_u16;
+    m_values[VT45MulticastGroup] = "224.0.0.1";
     cout << "Config file was reset" << endl;
   }
 
@@ -68,7 +71,7 @@ namespace HSA
     for(usize i = 0; const auto& [key, value] : m_values)
     {
       auto str = holds_alternative<string>(value) ? std::get<string>(value) : std::to_string(std::get<u16>(value));
-      cout << "Added key " << EnumerationDictionary.at(key) << " with value " << str << endl;
+      cout << "\tAdded key " << EnumerationDictionary.at(key) << " with value " << str << endl;
       ofs << "\t\"" << EnumerationDictionary.at(key) << "\": \"" << str << "\"";
       if(i != m_values.size() - 1)
         ofs << ",";
@@ -105,7 +108,7 @@ namespace HSA
       else
         value = value_str;
       m_values[EnumerationInverseDictionary.at(key)] = value;
-      cout << "Loaded key (" << key << "), value (" << value_str << ")" << endl;
+      cout << "\tLoaded key (" << key << "), value (" << value_str << ")" << endl;
     }
   }
 } // HSA

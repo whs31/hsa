@@ -23,7 +23,8 @@ namespace HSA
       {
         VT45IPv4,
         VT45Port,
-        VT45ListenPort
+        VT45ListenPort,
+        VT45MulticastGroup
       };
 
       enum class ErrorCode
