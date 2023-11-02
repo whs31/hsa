@@ -13,6 +13,5 @@ int main(int argc, char** argv)
   Qt::CoreApplication app(argc, argv);
   std::cout << "HSA version " << PROJECT_VERSION << " started." << std::endl;
   HSA::Adapter adapter;
-  std::cin.get();
   return Qt::CoreApplication::exec();
 }
