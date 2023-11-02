@@ -5,14 +5,16 @@
 #pragma once
 
 #include <variant>
-#include <map>
 #include <string>
+#include <map>
+#include <bidirectional_map>
 #include <Libra/Global>
 #include <Libra/Expected>
 
 using std::variant;
-using std::map;
 using std::string;
+using std::map;
+using bimap::bidirectional_map;
 
 namespace HSA
 {

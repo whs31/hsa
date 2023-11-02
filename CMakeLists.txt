@@ -34,6 +34,7 @@ set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)
 add_subdirectory(libs/libra)
 
 add_subdirectory(libs/3rd-party/vt45-protocol)
+add_subdirectory(libs/3rd-party/bimap)
 
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
@@ -41,6 +42,7 @@ target_link_libraries(${PROJECT_NAME}
     Qt5::Network
     Libra
     vt45
+    BidirectionalMap
 )
 
 target_include_directories(${PROJECT_NAME}

@@ -4,3 +4,6 @@
 [submodule "libs/3rd-party/vt45-protocol"]
 	path = libs/3rd-party/vt45-protocol
 	url = ../../../autopilot/protocol/vt45.git
+[submodule "libs/3rd-party/bimap"]
+	path = libs/3rd-party/bimap
+	url = ../BidirectionalMap.git

@@ -13,18 +13,11 @@ using std::endl;
 
 namespace HSA
 {
-  const map<Config::ConfigKey, string> EnumerationDictionary = {
+  const bidirectional_map<Config::ConfigKey, string> EnumerationDictionary = {
     { Config::ConfigKey::VT45IPv4, "vt45_ip" },
     { Config::ConfigKey::VT45Port, "vt45_port" },
     { Config::ConfigKey::VT45ListenPort, "vt45_listen_port" },
-    { Config::ConfigKey::VT45MulticastGroup, "vt45_multicast_group" },
-  };
-
-  const map<string, Config::ConfigKey> EnumerationInverseDictionary = {
-    { "vt45_ip", Config::ConfigKey::VT45IPv4 },
-    { "vt45_port", Config::ConfigKey::VT45Port },
-    { "vt45_listen_port", Config::ConfigKey::VT45ListenPort },
-    { "vt45_multicast_group", Config::ConfigKey::VT45MulticastGroup }
+    { Config::ConfigKey::VT45MulticastGroup, "vt45_multicast_group" }
   };
 
   constexpr const char* CFG_FILENAME = "cfg.json";
@@ -107,7 +100,7 @@ namespace HSA
         value = static_cast<u16>(std::stoi(value_str));
       else
         value = value_str;
-      m_values[EnumerationInverseDictionary.at(key)] = value;
+      m_values[EnumerationDictionary.inverse().at(key)] = value;
       cout << "\tLoaded key (" << key << "), value (" << value_str << ")" << endl;
     }
   }
