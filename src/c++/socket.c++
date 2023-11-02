@@ -51,6 +51,12 @@ namespace HSA
 
   void Socket::read() noexcept
   {
-    cout << "read" << endl;
+    QByteArray buffer(static_cast<isize>(m_socket->pendingDatagramSize()), 0x0);
+    QHostAddress host;
+    u16 port;
+    while(m_socket->hasPendingDatagrams())
+      m_socket->readDatagram(buffer.data(), buffer.size(), &host, &port);
+    //emit received(buffer);
+    cout << "read" << host.toString().toStdString() << " " << port <<  endl;
   }
 } // HSA
