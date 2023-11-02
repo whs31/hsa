@@ -19,7 +19,8 @@ using std::endl;
 
 namespace callbacks
 {
-  [[maybe_unused]] ruavp::utility::error_function ErrorFunction = [](){ cerr << "Invalid pointer received!" << endl; };
+  /* NOLINTNEXTLINE(cppcoreguidelines-interfaces-global-init) */
+  [[maybe_unused]] const ruavp::utility::error_function ErrorFunction = [](){ cerr << "Invalid pointer received!" << endl; };
 
   /* void core_ack(ruavp_protocol_data, const core_ack_t* d) {} */
 
