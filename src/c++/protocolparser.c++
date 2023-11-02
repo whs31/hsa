@@ -6,6 +6,7 @@
   */
 
 #include <iostream>
+#include <vt45.h>
 #include "protocolparser.h"
 #include "datagram.h"
 #include "parameters.h"
@@ -112,17 +113,19 @@ namespace HSA
 {
   ProtocolParser::ProtocolParser()
     : m_datagram(std::make_unique<Datagram>())
+    , m_protocol(std::make_unique<ruavp_protocol_t>())
   {
     this->registerCallbacks();
   }
 
   ProtocolParser::~ProtocolParser() = default;
   Datagram* ProtocolParser::datagram() const { return m_datagram.get(); }
+  ruavp_protocol_t* ProtocolParser::protocol() const { return m_protocol.get(); }
 
-  void ProtocolParser::decode(const string& data) { ruavp_decode_process(&m_protocol, data.c_str(), data.size()); }
+  void ProtocolParser::decode(const string& data) { ruavp_decode_process(protocol(), data.c_str(), data.size()); }
   void ProtocolParser::registerCallbacks() noexcept
   {
-    m_protocol = {
+    *protocol() = {
         .user = this,
         .process_core_param = +[](ruavp_protocol_t* p, const ruavp_header_t* h, const core_param_t* d){
           callbacks::core_param(

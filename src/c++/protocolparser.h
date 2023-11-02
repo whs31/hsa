@@ -10,11 +10,13 @@
 #include <string>
 #include <functional>
 #include <memory>
-#include <vt45.h>
 #include <Libra/Global>
 
 using std::string;
 using std::unique_ptr;
+
+struct ruavp_protocol_t;
+struct ruavp_header_t;
 
 namespace HSA
 {
@@ -26,6 +28,7 @@ namespace HSA
       ~ProtocolParser();
 
       [[nodiscard]] Datagram* datagram() const;
+      [[nodiscard]] ruavp_protocol_t* protocol() const;
 
       void decode(const string& data);
 
@@ -33,7 +36,7 @@ namespace HSA
       void registerCallbacks() noexcept;
 
     private:
-      ruavp_protocol_t m_protocol;
+      unique_ptr<ruavp_protocol_t> m_protocol;
       unique_ptr<Datagram> m_datagram;
   };
 } // HSA
