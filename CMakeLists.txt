@@ -28,6 +28,10 @@ target_sources(${PROJECT_NAME}
     src/c++/config.c++
     src/c++/protocolparser.h
     src/c++/protocolparser.c++
+    src/c++/adapter.h
+    src/c++/adapter.c++
+    src/c++/socket.h
+    src/c++/socket.c++
 )
 
 set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)

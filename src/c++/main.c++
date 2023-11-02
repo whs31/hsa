@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include <QtCore/QCoreApplication>
-#include "config.h"
+#include "adapter.h"
 
 namespace Qt { using CoreApplication = QCoreApplication; }
 
@@ -12,7 +12,7 @@ int main(int argc, char** argv)
 {
   Qt::CoreApplication app(argc, argv);
   std::cout << "HSA version " << PROJECT_VERSION << " started." << std::endl;
-  HSA::Config();
+  HSA::Adapter adapter;
   std::cin.get();
-  return 0;//Qt::CoreApplication::exec();
+  return Qt::CoreApplication::exec();
 }

@@ -13,14 +13,14 @@ using std::endl;
 
 namespace HSA
 {
+  constexpr const char* CFG_FILENAME = "cfg.json";
+
   const bidirectional_map<Config::ConfigKey, string> EnumerationDictionary = {
     { Config::ConfigKey::VT45IPv4, "vt45_ip" },
     { Config::ConfigKey::VT45Port, "vt45_port" },
     { Config::ConfigKey::VT45ListenPort, "vt45_listen_port" },
     { Config::ConfigKey::VT45MulticastGroup, "vt45_multicast_group" }
   };
-
-  constexpr const char* CFG_FILENAME = "cfg.json";
 
   Config::Config()
   {
@@ -43,6 +43,7 @@ namespace HSA
     m_values[VT45Port] = 4556_u16;
     m_values[VT45ListenPort] = 4557_u16;
     m_values[VT45MulticastGroup] = "224.0.0.1";
+
     cout << "Config file was reset" << endl;
   }
 
