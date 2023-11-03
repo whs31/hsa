@@ -22,7 +22,7 @@ namespace callbacks
   /* NOLINTNEXTLINE(cppcoreguidelines-interfaces-global-init) */
   [[maybe_unused]] const ruavp::utility::error_function ErrorFunction = [](){ cerr << "Invalid pointer received!" << endl; };
 
-  /* void core_ack(ruavp_protocol_data, const core_ack_t* d) {} */
+  /* void core_ack(ruavp_protocol_data, const core_ack_t* d) {}                         */
 
   void core_param(ruavp_protocol_data, const core_param_t* d)
   {
@@ -36,9 +36,58 @@ namespace callbacks
       };
   }
 
-  /* void core_message(ruavp_protocol_data, const core_message_t* d) {} */
-  /* void helihw_tenso(ruavp_protocol_data, const helihw_tenso_t* d) {} */
-  void navio_telemetry(ruavp_protocol_data, const navio_telemetry_t* d) {}
+  /* void core_message(ruavp_protocol_data, const core_message_t* d) {}                 */
+  /* void helihw_tenso(ruavp_protocol_data, const helihw_tenso_t* d) {}                 */
+
+  void navio_telemetry(ruavp_protocol_data, const navio_telemetry_t* d)
+  {
+    if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
+      return;
+    auto self = static_cast<HSA::ProtocolParser*>(p->user);
+    if(not self->parseSecondaryTelemetry())
+      return;
+
+    self->counter().navio_telemetry++;
+    self->datagram()->secondaryTelemetry.value() = {
+      .altitude_barometric = d->altitude_baro,
+      .altitude_gps = d->altitude_gps,
+      .altitude_radio = d->altitude_radio,
+      .gps_course_error = d->gps_course_variance,
+      .gps_velocity_error = d->gps_speed_variance,
+      .roll_velocity = d->gx,
+      .roll_velocity_error = d->gx_err,
+      .pitch_velocity = d->gy,
+      .pitch_velocity_error = d->gy_err,
+      .yaw_velocity = d->gz,
+      .yaw_velocity_error = d->gz_err,
+      .position_x = d->x,
+      .position_x_error = d->pos_variance_x,
+      .position_x_target = d->x_dst,
+      .position_y = d->y,
+      .position_y_error = d->pos_variance_y,
+      .position_y_target = d->y_dst,
+      .position_z_error = d->pos_variance_z,
+      .signal_roll = d->rc_roll,
+      .signal_pitch = d->rc_pitch,
+      .signal_yaw = d->rc_yaw,
+      .signal_throttle = d->rc_throttle,
+      .target_roll_velocity = d->sp_gx,
+      .target_pitch_velocity = d->sp_gy,
+      .target_yaw_velocity = d->sp_gz,
+      .target_altitude = d->sp_height,
+      .target_roll = d->sp_roll,
+      .target_pitch = d->sp_pitch,
+      .target_yaw = d->sp_yaw,
+      .target_vx = d->sp_vx,
+      .target_vy = d->sp_vy,
+      .target_vz = d->sp_vz,
+      .target_position_x = d->sp_x,
+      .target_position_y = d->sp_y,
+      .velocity_x_error = d->vel_variance_x,
+      .velocity_y_error = d->vel_variance_y,
+      .velocity_z_error = d->vel_variance_z
+    };
+  }
 
   void heli_telemetry(ruavp_protocol_data, const heli_telemetry_t* d)
   {
@@ -47,7 +96,7 @@ namespace callbacks
     if(not (h->source bitand to_underlying(HSA::VT45Class::Heli)))
       return;
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
-    /*
+    /* @todo
      * QString uavName = core->m_uavNames[uavId];
      * if (!uavName.size())
      *     core->sendGetParam(uavId, PARAM_HELINAME);
@@ -90,7 +139,6 @@ namespace callbacks
         .override_yaw = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::Yaw)))),
         .override_vz = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::VZ))))
     };
-    cout << self->counter().heli_telemetry << " ";
   }
 
   /* void heli_route(ruavp_protocol_data, const heli_route_t* d) {}                             */
@@ -116,11 +164,20 @@ namespace HSA
   ProtocolParser::ProtocolParser()
     : m_datagram(std::make_unique<Datagram>())
     , m_protocol(std::make_unique<ruavp_protocol_t>())
+    , m_parse_sec_tel(false)
   {
     this->registerCallbacks();
   }
 
   ProtocolParser::~ProtocolParser() = default;
+
+  bool ProtocolParser::parseSecondaryTelemetry() const { return m_parse_sec_tel; }
+  void ProtocolParser::setSecondaryTelemetryParsing(bool x) {
+    m_parse_sec_tel = x;
+    this->datagram()->secondaryTelemetry.reset();
+  }
+
+  ProtocolParser::Counter& ProtocolParser::counter() { return m_counter; }
   Datagram* ProtocolParser::datagram() const { return m_datagram.get(); }
   ruavp_protocol_t* ProtocolParser::protocol() const { return m_protocol.get(); }
 
@@ -157,7 +214,6 @@ namespace HSA
     };
   }
 
-  ProtocolParser::Counter& ProtocolParser::counter() { return m_counter; }
   ProtocolParser::Counter::Counter()
     : heli_status(0)
     , heli_telemetry(0)

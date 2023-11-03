@@ -41,6 +41,9 @@ namespace HSA
       ProtocolParser();
       ~ProtocolParser();
 
+      [[nodiscard]] bool parseSecondaryTelemetry() const;
+      void setSecondaryTelemetryParsing(bool);
+
       [[nodiscard]] Datagram* datagram() const;
       [[nodiscard]] ruavp_protocol_t* protocol() const;
       [[nodiscard]] Counter& counter();
@@ -54,6 +57,7 @@ namespace HSA
       unique_ptr<ruavp_protocol_t> m_protocol;
       unique_ptr<Datagram> m_datagram;
       Counter m_counter;
+      bool m_parse_sec_tel;
   };
 } // HSA
 
