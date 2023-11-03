@@ -11,10 +11,10 @@
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>
 #include "clilogger.h"
-#endif
 
 using std::cout;
 using std::endl;
+#endif
 
 namespace HSA
 {
