@@ -124,7 +124,7 @@ namespace HSA
   Datagram* ProtocolParser::datagram() const { return m_datagram.get(); }
   ruavp_protocol_t* ProtocolParser::protocol() const { return m_protocol.get(); }
 
-  void ProtocolParser::decode(const string& data) { ruavp_decode_process(protocol(), data.c_str(), data.size()); }
+  void ProtocolParser::decode(const string& data) const { ruavp_decode_process(protocol(), data.c_str(), data.size()); }
   void ProtocolParser::registerCallbacks() noexcept
   {
     *protocol() = {

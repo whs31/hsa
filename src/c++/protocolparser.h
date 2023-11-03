@@ -45,7 +45,7 @@ namespace HSA
       [[nodiscard]] ruavp_protocol_t* protocol() const;
       [[nodiscard]] Counter& counter();
 
-      void decode(const string& data);
+      void decode(const string& data) const;
 
     private:
       void registerCallbacks() noexcept;
