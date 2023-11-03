@@ -43,10 +43,10 @@ namespace callbacks
   {
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
+
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
     if(not self->parseSecondaryTelemetry())
       return;
-
     self->counter().navio_telemetry++;
     self->datagram()->secondaryTelemetry.value() = {
       .altitude_barometric = d->altitude_baro,
@@ -95,13 +95,13 @@ namespace callbacks
       return;
     if(not (h->source bitand to_underlying(HSA::VT45Class::Heli)))
       return;
+
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
     /* @todo
      * QString uavName = core->m_uavNames[uavId];
      * if (!uavName.size())
      *     core->sendGetParam(uavId, PARAM_HELINAME);
      */
-
     self->counter().heli_telemetry++;
     self->datagram()->telemetry = {
         .latitude = d->latitude,
@@ -143,8 +143,73 @@ namespace callbacks
 
   /* void heli_route(ruavp_protocol_data, const heli_route_t* d) {}                             */
   /* void heli_route_point(ruavp_protocol_data, const heli_route_point_t* d) {}                 */
-  /* void heli_status(ruavp_protocol_data, const heli_status_t* d) {}                           */
+
+  void heli_status(ruavp_protocol_data, const heli_status_t* d)
+  {
+    if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
+      return;
+    if(not (h->source bitand to_underlying(HSA::VT45Class::Heli)))
+      return;
+
+    auto self = static_cast<HSA::ProtocolParser*>(p->user);
+    self->counter().heli_status++;
+    self->datagram()->status = {
+        .last_received_timestamp = d->land_data_ts,
+        .time_left = d->time_left,
+        .voltage = d->voltage,
+        .temperature_engine_left = d->temperature_engine_cylinder_left,
+        .temperature_engine_right = d->temperature_engine_cylinder_right,
+        .temperature_main_reductor = d->temperature_main_reductor,
+        .temperature_servo_sp_left = d->temperature_servo_swashplate_left,
+        .temperature_servo_sp_rear = d->temperature_servo_swashplate_rear,
+        .temperature_servo_sp_right = d->temperature_servo_swashplate_right,
+        .temperature_servo_tail = d->temperature_servo_tail,
+        .temperature_servo_throttle = d->temperature_servo_throttle,
+        .temperature_tail_reductor = d->temperature_tail_reductor,
+        .memsic_state = d->memsic_status,
+        .altimeter_state = d->altimeter_state,
+        .autopilot_state = d->autopilot_state,
+        .bano_1_state = d->bano1_state,
+        .bano_2_state = d->bano2_state,
+        .barometer_state = d->barometer_state,
+        .filesystem_status = d->fs_status,
+        .fuel = d->fuel,
+        .fuel_sensor_state = d->fuel_sensor_state,
+        .gps_1_fixtype = d->gps1_fixtype,
+        .gps_1_noise = d->gps1_noise,
+        .gps_1_satellites = d->gps1_satellites,
+        .gps_1_state = d->gps1_noise,
+        .ignition_state = d->ignition_state,
+        .imu_1_state = d->imu1_state,
+        .imu_2_state = d->imu2_state,
+        .mag_1_state = d->mag1_state,
+        .modem_state = d->modem_state,
+        .rc_state = d->rc_state,
+        .rpm_engine_2_state = d->rpm_engine2_state,
+        .rpm_engine_state = d->rpm_engine_state,
+        .rpm_rotor_state = d->rpm_rotor_state,
+        .rpm_tail_state = d->rpm_tail_state,
+        .servo_sp_left_state = d->servo_swashplate_left_state,
+        .servo_sp_rear_state = d->servo_swashplate_rear_state,
+        .servo_sp_right_state = d->servo_swashplate_right_state,
+        .servo_tail_state = d->servo_tail_state,
+        .servo_throttle_state = d->servo_throttle_state,
+        .t_sensor_engine_left_state = d->temperature_engine_cylinder_left_state,
+        .t_sensor_engine_right_state = d->temperature_engine_cylinder_right_state,
+        .t_sensor_main_reductor_state = d->temperature_main_reductor_state,
+        .t_sensor_servo_sp_left_state = d->temperature_servo_swashplate_left_state,
+        .t_sensor_servo_sp_rear_state = d->temperature_servo_swashplate_rear_state,
+        .t_sensor_servo_sp_right_state = d->temperature_servo_swashplate_right_state,
+        .t_sensor_servo_tail_state = d->temperature_servo_tail_state,
+        .t_sensor_servo_throttle_state = d->temperature_servo_throttle_state,
+        .t_sensor_servo_tail_reductor_state = d->temperature_tail_reductor_state,
+        .tenso_state = d->tenso_state,
+        .trasser_state = d->trasser_state,
+        .xboard_state = d->xboard_state,
+    };
+  }
   /* void mag_telemetry(ruavp_protocol_data, const mag_telemetry_t* d) {}                       */
+
   /* void vip_united_unitdata(ruavp_protocol_data, const vip_united_unitdata_t* d) {}           */
   /* void yraw_gps(ruavp_protocol_data, const yraw_gps_t* d) {}                                 */
   /* void zzf_ads1_raw(ruavp_protocol_data, const zzf_ads1_raw_t* d) {}                         */
@@ -200,6 +265,12 @@ namespace HSA
           },
         .process_heli_telemetry = +[](ruavp_protocol_data, const heli_telemetry_t* d){
           callbacks::heli_telemetry(
+              std::forward<decltype(p)>(p),
+              std::forward<decltype(h)>(h),
+              std::forward<decltype(d)>(d));
+          },
+        .process_heli_status = +[](ruavp_protocol_data, const heli_status_t* d){
+          callbacks::heli_status(
               std::forward<decltype(p)>(p),
               std::forward<decltype(h)>(h),
               std::forward<decltype(d)>(d));
