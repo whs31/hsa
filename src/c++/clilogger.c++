@@ -27,7 +27,7 @@ namespace HSA
          << left << setw(10) << "HELI STAT" << "\033[0;33m" << setw(8) << p->counter().heli_status          << "\033[0m "
          << left << setw(10) << "VUD"       << "\033[0;33m" << setw(8) << p->counter().vip_united_unitdata  << "\033[0m "
          << left << setw(10) << "MAG TEL"   << "\033[0;33m" << setw(8) << p->counter().mag_telemetry        << "\033[0m "
-         << endl;
+         << "\n";
   }
 
   void CLILogger::LogTelemetry(ProtocolParser* p)
@@ -36,12 +36,23 @@ namespace HSA
          << left << setw(10) << "LON"       << "\033[0;35m" << setw(8) << p->datagram()->telemetry.longitude     << "\033[0m "
          << left << setw(10) << "ALTI"      << "\033[0;35m" << setw(8) << p->datagram()->telemetry.altitude      << "\033[0m "
          << left << setw(10) << "ALTI_ABS"  << "\033[0;35m" << setw(8) << p->datagram()->telemetry.altitude_abs  << "\033[0m "
-         << endl;
+         << "\n";
+    cout << left << setw(10) << "PITCH"     << "\033[0;36m" << setw(8) << p->datagram()->telemetry.pitch         << "\033[0m "
+         << left << setw(10) << "ROLL"      << "\033[0;36m" << setw(8) << p->datagram()->telemetry.roll          << "\033[0m "
+         << left << setw(10) << "YAW"       << "\033[0;36m" << setw(8) << p->datagram()->telemetry.yaw           << "\033[0m "
+         << left << setw(10) << "THROTTLE"  << "\033[0;36m" << setw(8) << p->datagram()->telemetry.throttle      << "\033[0m "
+         << "\n";
   }
 
   void CLILogger::LogClearLines(int line_count)
   {
     for(usize i = 0; i < line_count; ++i)
       cout << TERM_CLEAN_LAST_LINE;
+  }
+
+  void CLILogger::LogAddLines(int line_count)
+  {
+    for(usize i = 0; i < line_count; ++i)
+      cout << "\n";
   }
 } // HSA
