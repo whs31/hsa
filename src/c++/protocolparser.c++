@@ -53,7 +53,7 @@ namespace callbacks
      *     core->sendGetParam(uavId, PARAM_HELINAME);
      */
 
-    // @todo check for counters (atomic!)
+    self->counter().heli_telemetry++;
     self->datagram()->telemetry = {
         .latitude = d->latitude,
         .longitude = d->longitude,
@@ -90,6 +90,7 @@ namespace callbacks
         .override_yaw = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::Yaw)))),
         .override_vz = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::VZ))))
     };
+    cout << self->counter().heli_telemetry << " ";
   }
 
   void heli_route(ruavp_protocol_data, const heli_route_t* d) {}
@@ -244,4 +245,14 @@ namespace HSA
           },
     };
   }
+
+  ProtocolParser::Counter& ProtocolParser::counter() { return m_counter; }
+  ProtocolParser::Counter::Counter()
+    : heli_status(0)
+    , heli_telemetry(0)
+    , navio_telemetry(0)
+    , mag_telemetry(0)
+    , vip_united_unitdata(0)
+    , helihw_tenso(0)
+  {}
 } // HSA

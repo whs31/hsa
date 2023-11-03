@@ -7,6 +7,7 @@
 
 #pragma once
 
+#include <atomic>
 #include <string>
 #include <functional>
 #include <memory>
@@ -14,6 +15,7 @@
 
 using std::string;
 using std::unique_ptr;
+using std::atomic;
 
 struct ruavp_protocol_t;
 struct ruavp_header_t;
@@ -24,11 +26,24 @@ namespace HSA
   class ProtocolParser
   {
     public:
+      struct Counter
+      {
+        Counter();
+
+        atomic<usize> heli_status;
+        atomic<usize> heli_telemetry;
+        atomic<usize> navio_telemetry;
+        atomic<usize> mag_telemetry;
+        atomic<usize> vip_united_unitdata;
+        atomic<usize> helihw_tenso;
+      };
+
       ProtocolParser();
       ~ProtocolParser();
 
       [[nodiscard]] Datagram* datagram() const;
       [[nodiscard]] ruavp_protocol_t* protocol() const;
+      [[nodiscard]] Counter& counter();
 
       void decode(const string& data);
 
@@ -38,6 +53,7 @@ namespace HSA
     private:
       unique_ptr<ruavp_protocol_t> m_protocol;
       unique_ptr<Datagram> m_datagram;
+      Counter m_counter;
   };
 } // HSA
 

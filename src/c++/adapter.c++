@@ -43,7 +43,6 @@ namespace HSA
 
   void Adapter::socketRead(string data)
   {
-    cout << "x ";
     parser()->decode(data);
   }
 } // HSA
