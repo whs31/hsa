@@ -11,14 +11,16 @@
 #include <string>
 #include <functional>
 #include <memory>
-#include <Libra/Global>
+#include <unordered_map>
+#include <vector>
+#include <Libra/Expected>
+#include "ruavputility.h"
 
 using std::string;
 using std::unique_ptr;
 using std::atomic;
-
-struct ruavp_protocol_t;
-struct ruavp_header_t;
+using std::unordered_map;
+using std::vector;
 
 namespace HSA
 {
@@ -26,6 +28,13 @@ namespace HSA
   class ProtocolParser
   {
     public:
+      enum class HashtableAccessError
+      {
+        NoSuchKey,
+        KeyAlreadyPersistsAtCreation,
+        Unknown
+      };
+
       struct Counter
       {
         Counter();
@@ -46,7 +55,10 @@ namespace HSA
 
       [[nodiscard]] Datagram* datagram() const;
       [[nodiscard]] ruavp_protocol_t* protocol() const;
-      [[nodiscard]] Counter& counter();
+      [[nodiscard]] auto counter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>;
+      [[nodiscard]] auto addCounter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>;
+
+      [[nodiscard]] auto uavIDList() const -> vector<ruavp::utility::UavID>;
 
       void decode(const string& data) const;
 
@@ -56,27 +68,12 @@ namespace HSA
     private:
       unique_ptr<ruavp_protocol_t> m_protocol;
       unique_ptr<Datagram> m_datagram;
-      Counter m_counter;
+      unordered_map<ruavp::utility::UavID, Counter> m_counters;
       bool m_parse_sec_tel;
   };
 } // HSA
 
 namespace ruavp::utility
 {
-  using error_function = std::function<void (void)>;
 
-  template<typename T>
-  auto any_of_pointers_invalid(ruavp_protocol_t* a, const ruavp_header_t* b, const T* c) -> bool
-  {
-    return ((a == nullptr) or (b == nullptr) or (c == nullptr));
-  }
-
-  template<typename T>
-  auto any_of_pointers_invalid_signaling(ruavp_protocol_t* a, const ruavp_header_t* b, const T* c, error_function f) -> bool
-  {
-    auto is_error = any_of_pointers_invalid(a, b, c);
-    if(is_error)
-      f();
-    return is_error;
-  }
 } // ruavp::utility

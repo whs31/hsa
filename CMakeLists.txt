@@ -34,6 +34,8 @@ target_sources(${PROJECT_NAME}
     src/c++/export.h
     src/c++/config.h
     src/c++/config.c++
+    src/c++/ruavputility.h
+    src/c++/ruavputility.c++
     src/c++/protocolparser.h
     src/c++/protocolparser.c++
     src/c++/adapter.h

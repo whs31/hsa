@@ -25,12 +25,18 @@ namespace HSA
   void CLILogger::LogProtocolCounters(ProtocolParser* p)
   {
     #if defined HSA_ENABLE_LOGGING
-    cout << left << setw(10) << "HELIHW"    << "\033[0;33m" << setw(8) << p->counter().helihw_tenso         << "\033[0m "
-         << left << setw(10) << "NAVIO"     << "\033[0;31m" << setw(8) << p->counter().navio_telemetry      << "\033[0m "
-         << left << setw(10) << "HELI TEL"  << "\033[0;33m" << setw(8) << p->counter().heli_telemetry       << "\033[0m "
-         << left << setw(10) << "HELI STAT" << "\033[0;33m" << setw(8) << p->counter().heli_status          << "\033[0m "
-         << left << setw(10) << "VUD"       << "\033[0;33m" << setw(8) << p->counter().vip_united_unitdata  << "\033[0m "
-         << left << setw(10) << "MAG TEL"   << "\033[0;33m" << setw(8) << p->counter().mag_telemetry        << "\033[0m "
+    auto uav_ids = p->uavIDList();
+    auto counter = p->counter(uav_ids.front()).value();
+
+    cout << left << "UAV ID COUNT: " << "\033[0;33m"  << uav_ids.size()         << "\033[0m"
+                 << ", UAV ID USED:" << "\033[0;33m " << p->uavIDList().front() << "\033[0m"
+         << "\n";
+    cout << left << setw(10) << "HELIHW"    << "\033[0;33m" << setw(8) << counter->helihw_tenso         << "\033[0m "
+         << left << setw(10) << "NAVIO"     << "\033[0;31m" << setw(8) << counter->navio_telemetry      << "\033[0m "
+         << left << setw(10) << "HELI TEL"  << "\033[0;33m" << setw(8) << counter->heli_telemetry       << "\033[0m "
+         << left << setw(10) << "HELI STAT" << "\033[0;33m" << setw(8) << counter->heli_status          << "\033[0m "
+         << left << setw(10) << "VUD"       << "\033[0;33m" << setw(8) << counter->vip_united_unitdata  << "\033[0m "
+         << left << setw(10) << "MAG TEL"   << "\033[0;33m" << setw(8) << counter->mag_telemetry        << "\033[0m "
          << "\n";
     #endif
   }

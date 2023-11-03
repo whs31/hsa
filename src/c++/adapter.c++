@@ -45,7 +45,7 @@ namespace HSA
     socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));
 
     #if defined HSA_ENABLE_LOGGING
-    CLILogger::LogAddLines(4);
+    CLILogger::LogAddLines(5);
     #endif
   }
 
@@ -60,7 +60,7 @@ namespace HSA
     parser()->decode(data);
 
     #if defined HSA_ENABLE_LOGGING
-    CLILogger::LogClearLines(3);
+    CLILogger::LogClearLines(4);
     CLILogger::LogProtocolCounters(parser());
     CLILogger::LogTelemetry(parser());
     #endif

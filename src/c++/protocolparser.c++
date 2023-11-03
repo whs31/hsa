@@ -9,17 +9,14 @@
 #include "datagram.h"
 #include "parameters.h"
 
+#include <ranges>
+
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>
 using std::cout;
 using std::cerr;
 using std::endl;
 #endif
-
-extern "C"
-{
-#include <vt45.h>
-}
 
 #define ruavp_protocol_data ruavp_protocol_t* p, const ruavp_header_t* h
 
@@ -57,7 +54,14 @@ namespace callbacks
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
     if(not self->parseSecondaryTelemetry())
       return;
-    self->counter().navio_telemetry++;
+
+    auto id = ruavp::utility::get_uav_id(h);
+    auto cnt = self->counter(id);
+    if(cnt.has_value())
+      cnt.value()->navio_telemetry++;
+    else
+      self->addCounter(id).value()->navio_telemetry++;
+
     self->datagram()->secondaryTelemetry.value() = {
       .altitude_barometric = d->altitude_baro,
       .altitude_gps = d->altitude_gps,
@@ -112,7 +116,14 @@ namespace callbacks
      * if (!uavName.size())
      *     core->sendGetParam(uavId, PARAM_HELINAME);
      */
-    self->counter().heli_telemetry++;
+
+    auto id = ruavp::utility::get_uav_id(h);
+    auto cnt = self->counter(id);
+    if(cnt.has_value())
+      cnt.value()->heli_telemetry++;
+    else
+      self->addCounter(id).value()->heli_telemetry++;
+
     self->datagram()->telemetry = {
         .latitude = d->latitude,
         .longitude = d->longitude,
@@ -162,7 +173,14 @@ namespace callbacks
       return;
 
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
-    self->counter().heli_status++;
+
+    auto id = ruavp::utility::get_uav_id(h);
+    auto cnt = self->counter(id);
+    if(cnt.has_value())
+      cnt.value()->heli_status++;
+    else
+      self->addCounter(id).value()->heli_status++;
+
     self->datagram()->status = {
         .last_received_timestamp = d->land_data_ts,
         .time_left = d->time_left,
@@ -255,7 +273,28 @@ namespace HSA
       this->datagram()->secondaryTelemetry.reset();
   }
 
-  ProtocolParser::Counter& ProtocolParser::counter() { return m_counter; }
+  // I guarantee that this pointer is valid!
+  auto ProtocolParser::counter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>
+  {
+    if(not m_counters.contains(id))
+      return unexpected(HashtableAccessError::NoSuchKey);
+    return &(m_counters[id]);
+  }
+
+  auto ProtocolParser::addCounter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>
+  {
+    if(not m_counters.contains(id))
+      return unexpected(HashtableAccessError::KeyAlreadyPersistsAtCreation);
+    m_counters.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple());
+    return counter(id);
+  }
+
+  auto ProtocolParser::uavIDList() const -> vector<ruavp::utility::UavID>
+  {
+    auto key_view = std::views::keys(m_counters);
+    return vector<ruavp::utility::UavID>(key_view.begin(), key_view.end());
+  }
+
   Datagram* ProtocolParser::datagram() const { return m_datagram.get(); }
   ruavp_protocol_t* ProtocolParser::protocol() const { return m_protocol.get(); }
 
