@@ -4,6 +4,7 @@
 
 #include "adapter.h"
 #include <iostream>
+#include <iomanip>
 #include <functional>
 #include "config.h"
 #include "socket.h"
@@ -33,6 +34,7 @@ namespace HSA
 
     socket()->start(std::get<u16>(config()->value(Config::VT45ListenPort).value()));
     socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));
+    cout << endl;
   }
 
   Adapter::~Adapter() = default;
@@ -43,6 +45,16 @@ namespace HSA
 
   void Adapter::socketRead(string data)
   {
+    using std::setw;
+    using std::right;
     parser()->decode(data);
+
+    cout << "helihw: " << right << setw(6) << parser()->counter().helihw_tenso << " "
+         << "navio: " << right << setw(6) << parser()->counter().navio_telemetry << " "
+         << "telemetry: " << right << setw(6) << parser()->counter().heli_telemetry << " "
+         << "status: " << right << setw(6) << parser()->counter().heli_status << " "
+         << "vuu: " << right << setw(6) << parser()->counter().vip_united_unitdata << " "
+         << "mag: " << right << setw(6) << parser()->counter().mag_telemetry
+         << "\r";
   }
 } // HSA
