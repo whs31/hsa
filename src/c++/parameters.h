@@ -5,8 +5,13 @@
 #pragma once
 
 #include <type_traits>
-#include <vt45-params.h>
 #include "enumutils.h"
+
+extern "C"
+{
+#include <vt45.h>
+#include <vt45-params.h>
+}
 
 namespace HSA
 {

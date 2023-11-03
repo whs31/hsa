@@ -5,7 +5,6 @@
   *  @copyright Radar-MMS 2023
   */
 
-#include <vt45.h>
 #include "protocolparser.h"
 #include "datagram.h"
 #include "parameters.h"
@@ -16,6 +15,11 @@ using std::cout;
 using std::cerr;
 using std::endl;
 #endif
+
+extern "C"
+{
+#include <vt45.h>
+}
 
 #define ruavp_protocol_data ruavp_protocol_t* p, const ruavp_header_t* h
 
