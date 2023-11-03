@@ -34,7 +34,7 @@ namespace HSA
 
     socket()->start(std::get<u16>(config()->value(Config::VT45ListenPort).value()));
     socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));
-    cout << endl << endl;
+    cout << "\n\n\n";
   }
 
   Adapter::~Adapter() = default;
@@ -46,6 +46,8 @@ namespace HSA
   void Adapter::socketRead(string data)
   {
     parser()->decode(data);
+    CLILogger::LogClearLines(2);
     CLILogger::LogProtocolCounters(parser());
+    CLILogger::LogTelemetry(parser());
   }
 } // HSA

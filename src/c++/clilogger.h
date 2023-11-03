@@ -11,5 +11,7 @@ namespace HSA
   {
     public:
       static void LogProtocolCounters(ProtocolParser*);
+      static void LogTelemetry(ProtocolParser*);
+      static void LogClearLines(int line_count);
   };
 } // HSA
