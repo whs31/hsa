@@ -34,7 +34,7 @@ namespace HSA
 
     socket()->start(std::get<u16>(config()->value(Config::VT45ListenPort).value()));
     socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));
-    cout << endl;
+    cout << endl << endl;
   }
 
   Adapter::~Adapter() = default;

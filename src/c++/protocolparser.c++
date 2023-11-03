@@ -229,8 +229,8 @@ namespace HSA
   ProtocolParser::ProtocolParser()
     : m_datagram(std::make_unique<Datagram>())
     , m_protocol(std::make_unique<ruavp_protocol_t>())
-    , m_parse_sec_tel(false)
   {
+    this->setSecondaryTelemetryParsing(true);
     this->registerCallbacks();
   }
 
@@ -239,7 +239,10 @@ namespace HSA
   bool ProtocolParser::parseSecondaryTelemetry() const { return m_parse_sec_tel; }
   void ProtocolParser::setSecondaryTelemetryParsing(bool x) {
     m_parse_sec_tel = x;
-    this->datagram()->secondaryTelemetry.reset();
+    if(x)
+      this->datagram()->secondaryTelemetry.emplace();
+    else
+      this->datagram()->secondaryTelemetry.reset();
   }
 
   ProtocolParser::Counter& ProtocolParser::counter() { return m_counter; }
