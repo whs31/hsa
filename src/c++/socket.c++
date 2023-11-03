@@ -3,12 +3,15 @@
 //
 
 #include "socket.h"
-#include <iostream>
-#include <QtNetwork/QUdpSocket>
 #include <utility>
+#include <QtNetwork/QUdpSocket>
+
+#if defined HSA_ENABLE_LOGGING
+#include <iostream>
 
 using std::cout;
 using std::endl;
+#endif
 
 namespace HSA
 {
@@ -27,16 +30,25 @@ namespace HSA
 
   void Socket::start(u16 port) noexcept
   {
+    #if defined HSA_ENABLE_LOGGING
     cout << "Starting UDP socket on port " << port << endl;
+    #endif
+
     m_port = port;
     auto err = m_socket->bind(QHostAddress::AnyIPv4, m_port);
+
+    #if defined HSA_ENABLE_LOGGING
     cout << "Socket start" << (err ? "ed successfully" : "up failed") << " on "
          << m_socket->localAddress().toString().toStdString() << endl;
+    #endif
   }
 
   void Socket::stop() noexcept
   {
+    #if defined HSA_ENABLE_LOGGING
     cout << "Closing connection" << endl;
+    #endif
+
     m_socket->close();
     m_port = 0;
   }

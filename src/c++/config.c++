@@ -5,11 +5,15 @@
 #include "config.h"
 #include <filesystem>
 #include <fstream>
+
+#if defined HSA_ENABLE_LOGGING
 #include <iostream>
 
-namespace fs = std::filesystem;
 using std::cout;
 using std::endl;
+#endif
+
+namespace fs = std::filesystem;
 
 namespace HSA
 {
@@ -44,7 +48,9 @@ namespace HSA
     m_values[VT45ListenPort] = 4557_u16;
     m_values[VT45MulticastGroup] = "224.0.0.1";
 
+    #if defined HSA_ENABLE_LOGGING
     cout << "Config file was reset" << endl;
+    #endif
   }
 
   auto Config::create() noexcept -> bool
@@ -52,7 +58,10 @@ namespace HSA
     fs::path path = fs::current_path() / CFG_FILENAME;
     if(exists(path))
     {
+      #if defined HSA_ENABLE_LOGGING
       cout << "File exists, loading settings" << endl;
+      #endif
+
       this->load();
       return true;
     }
@@ -60,12 +69,20 @@ namespace HSA
     std::ofstream ofs(path);
 
     this->reset();
+
+    #if defined HSA_ENABLE_LOGGING
     cout << "Filling settings file" << endl;
+    #endif
+
     ofs << "{\n";
     for(usize i = 0; const auto& [key, value] : m_values)
     {
       auto str = holds_alternative<string>(value) ? std::get<string>(value) : std::to_string(std::get<u16>(value));
+
+      #if defined HSA_ENABLE_LOGGING
       cout << "\tAdded key " << EnumerationDictionary.at(key) << " with value " << str << endl;
+      #endif
+
       ofs << "\t\"" << EnumerationDictionary.at(key) << "\": \"" << str << "\"";
       if(i != m_values.size() - 1)
         ofs << ",";
@@ -74,7 +91,11 @@ namespace HSA
     }
     ofs << "}\n";
     ofs.close();
+
+    #if defined HSA_ENABLE_LOGGING
     cout << "Settings file filled" << endl;
+    #endif
+
     this->load();
     return true;
   }
@@ -82,7 +103,11 @@ namespace HSA
   void Config::load() noexcept
   {
     fs::path path = fs::current_path() / CFG_FILENAME;
+
+    #if defined HSA_ENABLE_LOGGING
     cout << "Loading settings from " << CFG_FILENAME << endl;
+    #endif
+
     std::ifstream ifs(path);
     string line_buffer;
     while(std::getline(ifs, line_buffer))
@@ -102,7 +127,10 @@ namespace HSA
       else
         value = value_str;
       m_values[EnumerationDictionary.inverse().at(key)] = value;
+
+      #if defined HSA_ENABLE_LOGGING
       cout << "\tLoaded key (" << key << "), value (" << value_str << ")" << endl;
+      #endif
     }
   }
 } // HSA

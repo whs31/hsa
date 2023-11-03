@@ -3,12 +3,15 @@
 //
 
 #include "adapter.h"
-#include <iostream>
 #include <functional>
 #include "config.h"
 #include "socket.h"
 #include "protocolparser.h"
+
+#if defined HSA_ENABLE_LOGGING
+#include <iostream>
 #include "clilogger.h"
+#endif
 
 using std::cout;
 using std::endl;
@@ -22,19 +25,28 @@ namespace HSA
   {
     if(not config()->value(Config::VT45ListenPort))
     {
+      #if defined HSA_ENABLE_LOGGING
       cout << "Error fetching listen port from config" << endl;
+      #endif
+
       return;
     }
 
     if(not config()->value(Config::VT45MulticastGroup))
     {
+      #if defined HSA_ENABLE_LOGGING
       cout << "Error fetching multicast group from config" << endl;
+      #endif
+
       return;
     }
 
     socket()->start(std::get<u16>(config()->value(Config::VT45ListenPort).value()));
     socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));
+
+    #if defined HSA_ENABLE_LOGGING
     CLILogger::LogAddLines(4);
+    #endif
   }
 
   Adapter::~Adapter() = default;
@@ -46,8 +58,11 @@ namespace HSA
   void Adapter::socketRead(string data)
   {
     parser()->decode(data);
+
+    #if defined HSA_ENABLE_LOGGING
     CLILogger::LogClearLines(3);
     CLILogger::LogProtocolCounters(parser());
     CLILogger::LogTelemetry(parser());
+    #endif
   }
 } // HSA

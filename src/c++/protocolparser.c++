@@ -5,22 +5,28 @@
   *  @copyright Radar-MMS 2023
   */
 
-#include <iostream>
 #include <vt45.h>
 #include "protocolparser.h"
 #include "datagram.h"
 #include "parameters.h"
 
+#if defined HSA_ENABLE_LOGGING
+#include <iostream>
 using std::cout;
 using std::cerr;
 using std::endl;
+#endif
 
 #define ruavp_protocol_data ruavp_protocol_t* p, const ruavp_header_t* h
 
 namespace callbacks
 {
   /* NOLINTNEXTLINE(cppcoreguidelines-interfaces-global-init) */
-  [[maybe_unused]] const ruavp::utility::error_function ErrorFunction = [](){ cerr << "Invalid pointer received!" << endl; };
+  [[maybe_unused]] const ruavp::utility::error_function ErrorFunction = [](){
+    #if defined HSA_ENABLE_LOGGING
+    cerr << "Invalid pointer received!" << endl;
+    #endif
+  };
 
   /* void core_ack(ruavp_protocol_data, const core_ack_t* d) {}                         */
 
