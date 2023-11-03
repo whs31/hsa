@@ -30,6 +30,8 @@ endif()
 target_sources(${PROJECT_NAME}
   PRIVATE
     src/c++/main.c++
+    src/c++/hsa.h
+    src/c++/export.h
     src/c++/config.h
     src/c++/config.c++
     src/c++/protocolparser.h
@@ -72,6 +74,8 @@ target_compile_definitions(${PROJECT_NAME}
     -DPROJECT_VERSION="${PROJECT_VERSION}"
     -DPROJECT_COMPANY="Radar-MMS"
     -DPROJECT_DOMAIN="${PROJECT_HOMEPAGE_URL}"
+
+    -DHSA_LIBRARY
 )
 
 if(HSA_ENABLE_LOGGING)
