@@ -49,11 +49,11 @@ namespace HSA
     using std::right;
     parser()->decode(data);
 
-    cout << "helihw: " << right << setw(6) << parser()->counter().helihw_tenso << " "
-         << "navio: " << right << setw(6) << parser()->counter().navio_telemetry << " "
-         << "telemetry: " << right << setw(6) << parser()->counter().heli_telemetry << " "
-         << "status: " << right << setw(6) << parser()->counter().heli_status << " "
-         << "vuu: " << right << setw(6) << parser()->counter().vip_united_unitdata << " "
+    cout << "helihw: " << right << setw(6) << parser()->counter().helihw_tenso << "   "
+         << "navio: " << right << setw(6) << parser()->counter().navio_telemetry << "   "
+         << "telemetry: " << right << setw(6) << parser()->counter().heli_telemetry << "   "
+         << "status: " << right << setw(6) << parser()->counter().heli_status << "   "
+         << "vuu: " << right << setw(6) << parser()->counter().vip_united_unitdata << "   "
          << "mag: " << right << setw(6) << parser()->counter().mag_telemetry
          << "\r";
   }
