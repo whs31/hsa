@@ -10,10 +10,12 @@
 
 extern "C"
 {
-  typedef struct HSA_Telemetry
-  {
-    double latitude;
-  };
+//  typedef struct HSA_Telemetry
+//  {
+//    double latitude;
+//  };
 }
+
+extern "C" HSA_EXPORT const char* Version() { return PROJECT_VERSION; }
 
 #pragma clang diagnostic pop
