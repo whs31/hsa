@@ -35,6 +35,8 @@ target_sources(${PROJECT_NAME}
     src/c++/datagram.h
     src/c++/parameters.h
     src/c++/enumutils.h
+    src/c++/clilogger.h
+    src/c++/clilogger.c++
 )
 
 set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)
