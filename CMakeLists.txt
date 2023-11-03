@@ -10,7 +10,8 @@ project(HSA
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-option(HSA_ENABLE_LOGGING "Enable CLI output" OFF)
+option(HSA_ENABLE_LOGGING "Enable CLI output" ON)
+option(HSA_STANDALONE "Build standalone application. If not set, dynamic library will be built instead" ON)
 
 find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
@@ -21,7 +22,10 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
 set(CMAKE_AUTORCC ON)
 set(CMAKE_AUTOMOC ON)
 
-add_executable(${PROJECT_NAME})
+if(HSA_STANDALONE)
+  message(STATUS "[HSA] Building standalone executable.")
+  add_executable(${PROJECT_NAME})
+endif()
 
 target_sources(${PROJECT_NAME}
   PRIVATE
@@ -79,3 +83,4 @@ if(HSA_ENABLE_LOGGING)
 endif()
 
 unset(HSA_ENABLE_LOGGING CACHE)
+unset(HSA_STANDALONE CACHE)
