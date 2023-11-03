@@ -10,6 +10,7 @@
 #include "parameters.h"
 
 #include <ranges>
+#include <Libra/Platform>
 
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>
@@ -291,8 +292,15 @@ namespace HSA
 
   auto ProtocolParser::uavIDList() const -> vector<ruavp::utility::UavID>
   {
+    #if defined(LIBRA_OS_WINDOWS)
     auto key_view = std::views::keys(m_counters);
     return vector<ruavp::utility::UavID>(key_view.begin(), key_view.end());
+    #else
+    vector<ruavp::utility::UavID> ret;
+    for(const auto& [key, _] : m_counters)
+      ret.push_back(key);
+    return ret;
+    #endif
   }
 
   Datagram* ProtocolParser::datagram() const { return m_datagram.get(); }
