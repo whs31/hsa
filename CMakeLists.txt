@@ -25,13 +25,15 @@ set(CMAKE_AUTOMOC ON)
 if(HSA_STANDALONE)
   message(STATUS "[HSA] Building standalone executable.")
   add_executable(${PROJECT_NAME})
+else()
+  message(STATUS "[HSA] Building shared library.")
+  add_library(${PROJECT_NAME} SHARED)
 endif()
 
 target_sources(${PROJECT_NAME}
   PRIVATE
     src/c++/adapter.h
     src/c++/adapter.c++
-    src/c++/standalone/main.c++
     src/c++/export/hsa.h
     src/c++/export/export.h
     src/c++/config/config.h
@@ -49,9 +51,15 @@ target_sources(${PROJECT_NAME}
     src/c++/utility/clilogger.c++
 )
 
+if(HSA_STANDALONE)
+  target_sources(${PROJECT_NAME}
+    PRIVATE
+      src/c++/standalone/main.c++
+  )
+endif()
+
 set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)
 add_subdirectory(libs/libra)
-
 add_subdirectory(libs/3rd-party/vt45-protocol)
 add_subdirectory(libs/3rd-party/bimap)
 
