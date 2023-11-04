@@ -16,8 +16,8 @@ option(HSA_STANDALONE "Build standalone application. If not set, dynamic library
 find_package(Threads REQUIRED)
 
 add_library(asio INTERFACE)
-target_include_directories(asio SYSTEM INTERFACE ${CMAKE_SOURCE_DIR}/libs/3rd-party/asio/include)
-message(STATUS "[ASIO] Path to ASIO: ${CMAKE_SOURCE_DIR}/libs/3rd-party/asio/include")
+target_include_directories(asio SYSTEM INTERFACE ${CMAKE_SOURCE_DIR}/libs/3rd-party/asio-standalone/include)
+message(STATUS "[ASIO] Path to ASIO: ${CMAKE_SOURCE_DIR}/libs/3rd-party/asio-standalone/include")
 target_compile_definitions(asio INTERFACE ASIO_STANDALONE ASIO_NO_DEPRECATED)
 target_link_libraries(asio INTERFACE Threads::Threads)
 

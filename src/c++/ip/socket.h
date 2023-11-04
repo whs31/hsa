@@ -8,7 +8,6 @@
 #include <memory>
 #include <functional>
 #include <Libra/Global>
-#include "asio.hpp"
 
 using std::string;
 using std::unique_ptr;
