@@ -5,7 +5,7 @@
 #pragma once
 
 #include <type_traits>
-#include "enumutils.h"
+#include "utility/enumutils.h"
 
 extern "C"
 {

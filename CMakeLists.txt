@@ -29,24 +29,24 @@ endif()
 
 target_sources(${PROJECT_NAME}
   PRIVATE
-    src/c++/main.c++
-    src/c++/hsa.h
-    src/c++/export.h
-    src/c++/config.h
-    src/c++/config.c++
-    src/c++/ruavputility.h
-    src/c++/ruavputility.c++
-    src/c++/protocolparser.h
-    src/c++/protocolparser.c++
     src/c++/adapter.h
     src/c++/adapter.c++
-    src/c++/socket.h
-    src/c++/socket.c++
-    src/c++/datagram.h
-    src/c++/parameters.h
-    src/c++/enumutils.h
-    src/c++/clilogger.h
-    src/c++/clilogger.c++
+    src/c++/standalone/main.c++
+    src/c++/export/hsa.h
+    src/c++/export/export.h
+    src/c++/config/config.h
+    src/c++/config/config.c++
+    src/c++/protocol/ruavputility.h
+    src/c++/protocol/ruavputility.c++
+    src/c++/protocol/protocolparser.h
+    src/c++/protocol/protocolparser.c++
+    src/c++/protocol/datagram.h
+    src/c++/protocol/parameters.h
+    src/c++/ip/socket.h
+    src/c++/ip/socket.c++
+    src/c++/utility/enumutils.h
+    src/c++/utility/clilogger.h
+    src/c++/utility/clilogger.c++
 )
 
 set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)

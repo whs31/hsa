@@ -3,8 +3,8 @@
 //
 
 #include "clilogger.h"
-#include "protocolparser.h"
-#include "datagram.h"
+#include "protocol/protocolparser.h"
+#include "protocol/datagram.h"
 
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>

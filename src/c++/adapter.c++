@@ -4,13 +4,13 @@
 
 #include "adapter.h"
 #include <functional>
-#include "config.h"
-#include "socket.h"
-#include "protocolparser.h"
+#include "config/config.h"
+#include "ip/socket.h"
+#include "protocol/protocolparser.h"
 
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>
-#include "clilogger.h"
+#include "utility/clilogger.h"
 
 using std::cout;
 using std::endl;
