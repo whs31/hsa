@@ -7,3 +7,6 @@
 [submodule "libs/3rd-party/bimap"]
 	path = libs/3rd-party/bimap
 	url = ../BidirectionalMap.git
+[submodule "libs/3rd-party/asio-standalone"]
+	path = libs/3rd-party/asio-standalone
+	url = ../asio-vcpkg.git
