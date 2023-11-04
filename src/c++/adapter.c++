@@ -55,7 +55,7 @@ namespace HSA
   Socket* Adapter::socket() const { return m_socket.get(); }
   ProtocolParser* Adapter::parser() const { return m_protocol_parser.get(); }
 
-  void Adapter::socketRead(string data)
+  void Adapter::socketRead(const string& data)
   {
     parser()->decode(data);
 

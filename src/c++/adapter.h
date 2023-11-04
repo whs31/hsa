@@ -26,7 +26,7 @@ namespace HSA
       [[nodiscard]] ProtocolParser* parser() const;
 
     private:
-      void socketRead(string data);
+      void socketRead(const string& data);
 
     private:
       unique_ptr<Config> m_config;
