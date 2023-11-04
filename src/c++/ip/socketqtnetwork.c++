@@ -1,8 +1,8 @@
 //
-// Created by whs31 on 11/2/2023.
+// Created by whs31 on 04.11.2023.
 //
 
-#include "socket.h"
+#include "socketqtnetwork.h"
 #include <utility>
 #include <QtNetwork/QUdpSocket>
 
@@ -15,7 +15,7 @@ using std::endl;
 
 namespace HSA
 {
-  Socket::Socket(SocketReceiveCallback callback)
+  SocketQtNetwork::SocketQtNetwork(ISocket::SocketReceiveCallback callback)
     : m_socket(std::make_unique<QUdpSocket>())
     , m_port(25565)
     , m_callback(std::move(callback))
@@ -23,12 +23,12 @@ namespace HSA
     Qt::Object::connect(m_socket.get(), &QUdpSocket::readyRead, [this](){ this->read(); });
   }
 
-  Socket::~Socket()
+  SocketQtNetwork::~SocketQtNetwork()
   {
     this->stop();
   }
 
-  void Socket::start(u16 port) noexcept
+  void SocketQtNetwork::start(u16 port) noexcept
   {
     #if defined HSA_ENABLE_LOGGING
     cout << "Starting UDP socket on port " << port << endl;
@@ -43,7 +43,7 @@ namespace HSA
     #endif
   }
 
-  void Socket::stop() noexcept
+  void SocketQtNetwork::stop() noexcept
   {
     #if defined HSA_ENABLE_LOGGING
     cout << "Closing connection" << endl;
@@ -53,17 +53,17 @@ namespace HSA
     m_port = 0;
   }
 
-  void Socket::send(const string& data) noexcept
+  void SocketQtNetwork::send(const string& data) noexcept
   {
-
+    // @todo send function!
   }
 
-  void Socket::joinMulticastGroup(const string& ip) noexcept
+  void SocketQtNetwork::joinMulticastGroup(const string& ip) noexcept
   {
     m_socket->joinMulticastGroup(QHostAddress(Qt::String::fromStdString(ip)));
   }
 
-  void Socket::read() noexcept
+  void SocketQtNetwork::read() noexcept
   {
     Qt::ByteArray buffer(static_cast<isize>(m_socket->pendingDatagramSize()), 0x0);
     QHostAddress host;

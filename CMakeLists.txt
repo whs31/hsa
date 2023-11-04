@@ -79,8 +79,11 @@ target_sources(${PROJECT_NAME}
     src/c++/protocol/protocolparser.c++
     src/c++/protocol/datagram.h
     src/c++/protocol/parameters.h
-    src/c++/ip/socket.h
-    src/c++/ip/socket.c++
+    src/c++/ip/isocket.h
+    src/c++/ip/socketqtnetwork.h
+    src/c++/ip/socketqtnetwork.c++
+    src/c++/ip/socketasio.h
+    src/c++/ip/socketasio.c++
     src/c++/utility/enumutils.h
     src/c++/utility/clilogger.h
     src/c++/utility/clilogger.c++

@@ -5,7 +5,7 @@
 #include "adapter.h"
 #include <functional>
 #include "config/config.h"
-#include "ip/socket.h"
+#include "ip/socketqtnetwork.h"
 #include "protocol/protocolparser.h"
 
 #if defined HSA_ENABLE_LOGGING
@@ -20,7 +20,8 @@ namespace HSA
 {
   Adapter::Adapter()
     : m_config(std::make_unique<Config>())
-    , m_socket(std::make_unique<Socket>([this](auto&& PH1){ socketRead(std::forward<decltype(PH1)>(PH1)); }))
+    , m_socket(std::make_unique<SocketQtNetwork>([this](auto&& PH1)
+              { socketRead(std::forward<decltype(PH1)>(PH1)); }))
     , m_protocol_parser(std::make_unique<ProtocolParser>())
   {
     if(not config()->value(Config::VT45ListenPort))
@@ -52,7 +53,7 @@ namespace HSA
   Adapter::~Adapter() = default;
 
   Config* Adapter::config() const { return m_config.get(); }
-  Socket* Adapter::socket() const { return m_socket.get(); }
+  ISocket* Adapter::socket() const { return m_socket.get(); }
   ProtocolParser* Adapter::parser() const { return m_protocol_parser.get(); }
 
   void Adapter::socketRead(const string& data)

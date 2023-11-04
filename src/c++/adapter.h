@@ -13,7 +13,7 @@ using std::unique_ptr;
 namespace HSA
 {
   class Config;
-  class Socket;
+  class ISocket;
   class ProtocolParser;
   class Adapter
   {
@@ -22,7 +22,7 @@ namespace HSA
       ~Adapter();
 
       [[nodiscard]] Config* config() const;
-      [[nodiscard]] Socket* socket() const;
+      [[nodiscard]] ISocket* socket() const;
       [[nodiscard]] ProtocolParser* parser() const;
 
     private:
@@ -30,7 +30,7 @@ namespace HSA
 
     private:
       unique_ptr<Config> m_config;
-      unique_ptr<Socket> m_socket;
+      unique_ptr<ISocket> m_socket;
       unique_ptr<ProtocolParser> m_protocol_parser;
   };
 } // HSA
