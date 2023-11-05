@@ -17,6 +17,11 @@ extern "C"
 //  };
 }
 
+static asio::io_context io_context;
+static HSA::Adapter adapter(io_context);
+
+extern "C" HSA_EXPORT void Run() { io_context.run(); }
+
 extern "C" HSA_EXPORT const char* Version() { return PROJECT_VERSION; }
 extern "C" HSA_EXPORT bool IsWin32()
 {
