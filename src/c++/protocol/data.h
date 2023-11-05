@@ -22,16 +22,28 @@ namespace VT45
     string name;
   };
 
-  namespace Structures::Heli
+  namespace Structures
   {
-    struct TelemetryOverriders
+    namespace Heli
     {
-      u8 override_altitude;
-      u8 override_velocity;
-      u8 override_yaw;
-      u8 override_vz;
-    };
-  } // Heli::Structures
+      struct TelemetryOverriders
+      {
+        u8 override_altitude;
+        u8 override_velocity;
+        u8 override_yaw;
+        u8 override_vz;
+      };
+    } // Heli
+
+    namespace HeliHW
+    {
+      struct TensoStatus
+      {
+        u8 leftStatus;
+        u8 rightStatus;
+      };
+    } // HeliHW
+  } // Structures
 } // VT45
 
 namespace HSA
@@ -44,6 +56,8 @@ namespace HSA
     VT45::Structures::Heli::Status status;
     VT45::Structures::MAG::Telemetry magTelemetry;
     VT45::Structures::VIP::UnitedUnitdata vipUnitedUnitdata;
+    VT45::Structures::HeliHW::Tenso helihwTenso;
+    VT45::Structures::HeliHW::TensoStatus helihwTensoStatus;
     optional<VT45::Structures::NavIO::Telemetry> secondaryTelemetry;
   };
 } // HSA

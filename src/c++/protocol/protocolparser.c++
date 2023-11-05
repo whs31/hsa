@@ -47,7 +47,27 @@ namespace callbacks
   }
 
   /* void core_message(ruavp_protocol_data, const core_message_t* d) {}                 */
-  /* void helihw_tenso(ruavp_protocol_data, const helihw_tenso_t* d) {}                 */
+
+  void helihw_tenso(PROTO p, HDR h, const VT45::Structures::HeliHW::Tenso* d)
+  {
+    if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
+      return;
+    if(not (h->source bitand to_underlying(VT45::RuavpClass::Heli)))
+      return;
+
+    auto self = ruavp::utility::get_user(p);
+    auto id = ruavp::utility::get_uav_id(h);
+    auto cnt = self->counter(id);
+    if(cnt.has_value())
+      cnt.value()->helihw_tenso++;
+    else
+      self->addCounter(id).value()->helihw_tenso++;
+    self->datagram()->helihwTenso = *(d);
+    self->datagram()->helihwTensoStatus = {
+      .leftStatus = static_cast<u8>((d->__bit_1 bitand 0x01)),
+      .rightStatus = static_cast<u8>((d->__bit_1 bitand 0x02))
+    };
+  }
 
   void navio_telemetry(PROTO p, HDR h, const VT45::Structures::NavIO::Telemetry* d)
   {
