@@ -7,6 +7,7 @@
 #pragma clang diagnostic ignored "-Wmissing-declarations"
 
 #include "hsa.h"
+#include "adapter.h"
 
 extern "C"
 {
@@ -17,5 +18,21 @@ extern "C"
 }
 
 extern "C" HSA_EXPORT const char* Version() { return PROJECT_VERSION; }
+extern "C" HSA_EXPORT bool IsWin32()
+{
+  #if defined(LIBRA_OS_WINDOWS)
+  return true;
+  #else
+  return false;
+  #endif
+}
+extern "C" HSA_EXPORT bool IsPOSIX()
+{
+  #if defined(LIBRA_OS_LINUX)
+  return true;
+  #else
+  return false;
+  #endif
+}
 
 #pragma clang diagnostic pop
