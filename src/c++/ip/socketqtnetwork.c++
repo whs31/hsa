@@ -1,7 +1,7 @@
 //
 // Created by whs31 on 04.11.2023.
 //
-
+#if (0)
 #include "socketqtnetwork.h"
 #include <utility>
 #include <QtNetwork/QUdpSocket>
@@ -73,3 +73,4 @@ namespace HSA
     m_callback(buffer.toStdString());
   }
 } // HSA
+#endif

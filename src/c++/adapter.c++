@@ -5,7 +5,6 @@
 #include "adapter.h"
 #include <functional>
 #include "config/config.h"
-#include "ip/socketqtnetwork.h" // TODO remove
 #include "ip/socketasio.h"
 #include "protocol/protocolparser.h"
 

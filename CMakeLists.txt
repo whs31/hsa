@@ -13,15 +13,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 option(HSA_ENABLE_LOGGING "Enable CLI output" ON)
 option(HSA_STANDALONE "Build standalone application. If not set, dynamic library will be built instead" ON)
 
-find_package(QT NAMES Qt5 Qt6 REQUIRED COMPONENTS Core)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS
-  Core
-  Network
-)
-
-set(CMAKE_AUTORCC ON)
-set(CMAKE_AUTOMOC ON)
-
 if(HSA_STANDALONE)
   message(STATUS "[HSA] Building standalone executable.")
   add_executable(${PROJECT_NAME})
@@ -46,8 +37,6 @@ target_sources(${PROJECT_NAME}
     src/c++/protocol/parameters.h
     src/c++/protocol/wrapper.h
     src/c++/ip/isocket.h
-    src/c++/ip/socketqtnetwork.h
-    src/c++/ip/socketqtnetwork.c++
     src/c++/ip/socketasio.h
     src/c++/ip/socketasio.c++
     src/c++/utility/enumutils.h
@@ -62,17 +51,15 @@ if(HSA_STANDALONE)
   )
 endif()
 
-set(LIBRA_QT_TYPEDEFS ON CACHE BOOL "Enable Qt-specific type aliases" FORCE)
 add_subdirectory(libs/libra)
 add_subdirectory(libs/asio)
 add_subdirectory(libs/3rd-party/vt45-protocol)
 add_subdirectory(libs/3rd-party/bimap)
 
+set_target_properties(BidirectionalMap PROPERTIES LINKER_LANGUAGE CXX)
+
 target_link_libraries(${PROJECT_NAME}
   PRIVATE
-    Qt${QT_VERSION_MAJOR}::Core
-    Qt${QT_VERSION_MAJOR}::Network
-
     Libra
     vt45
     BidirectionalMap
