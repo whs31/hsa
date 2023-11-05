@@ -30,20 +30,16 @@ namespace HSA
   void SocketASIO::start(u16 port)
   {
     this->stop();
+
     #if defined HSA_ENABLE_LOGGING
     cout << "Starting UDP socket on port " << port << endl;
     #endif
+
     m_endpoint = asio::ip::udp::endpoint(asio::ip::udp::v4(), port);
-    try
-    {
-      m_socket.open(m_endpoint.protocol());
-      m_socket.bind(m_endpoint);
-      this->read();
-    }
-    catch(const std::exception& e)
-    {
-      cerr << e.what() << endl;
-    }
+    m_socket.open(m_endpoint.protocol());
+    m_socket.bind(m_endpoint);
+    this->read();
+
     #if defined HSA_ENABLE_LOGGING
     cout << "Socket started on " << m_socket.local_endpoint().address().to_string()
          << ":" << m_socket.local_endpoint().port() << endl;

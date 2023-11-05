@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <asio/io_context.hpp>
 
 using std::string;
 using std::unique_ptr;
@@ -18,7 +19,7 @@ namespace HSA
   class Adapter
   {
     public:
-      Adapter();
+      Adapter(asio::io_context& context);
       ~Adapter();
 
       [[nodiscard]] Config* config() const;

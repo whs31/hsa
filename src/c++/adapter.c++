@@ -15,11 +15,12 @@
 
 using std::cout;
 using std::endl;
+using std::cerr;
 #endif
 
 namespace HSA
 {
-  Adapter::Adapter()
+  Adapter::Adapter(asio::io_context& context)
     : m_config(std::make_unique<Config>())
     , m_protocol_parser(std::make_unique<ProtocolParser>())
   {
@@ -41,13 +42,19 @@ namespace HSA
       return;
     }
 
-    asio::io_context io_context;
     m_socket = std::make_unique<SocketASIO>([this](auto&& PH1) { this->socketRead(std::forward<decltype(PH1)>(PH1)); },
-                                            io_context);
-    io_context.run();
-
-    socket()->start(std::get<u16>(config()->value(Config::VT45ListenPort).value()));
-    socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));
+                                            context);
+    try
+    {
+      socket()->start(std::get<u16>(config()->value(Config::VT45ListenPort).value()));
+      socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));
+    }
+    catch(const std::exception& e)
+    {
+      #if defined HSA_ENABLE_LOGGING
+      cerr << e.what() << endl;
+      #endif
+    }
 
     #if defined HSA_ENABLE_LOGGING
     CLILogger::LogAddLines(7);
