@@ -28,7 +28,7 @@ namespace HSA
     this->stop();
   }
 
-  void SocketQtNetwork::start(u16 port) noexcept
+  void SocketQtNetwork::start(u16 port)
   {
     #if defined HSA_ENABLE_LOGGING
     cout << "Starting UDP socket on port " << port << endl;
@@ -43,7 +43,7 @@ namespace HSA
     #endif
   }
 
-  void SocketQtNetwork::stop() noexcept
+  void SocketQtNetwork::stop()
   {
     #if defined HSA_ENABLE_LOGGING
     cout << "Closing connection" << endl;
@@ -53,17 +53,17 @@ namespace HSA
     m_port = 0;
   }
 
-  void SocketQtNetwork::send(const string& data) noexcept
+  void SocketQtNetwork::send(const string& data)
   {
     // @todo send function!
   }
 
-  void SocketQtNetwork::joinMulticastGroup(const string& ip) noexcept
+  void SocketQtNetwork::joinMulticastGroup(const string& ip)
   {
     m_socket->joinMulticastGroup(QHostAddress(Qt::String::fromStdString(ip)));
   }
 
-  void SocketQtNetwork::read() noexcept
+  void SocketQtNetwork::read()
   {
     Qt::ByteArray buffer(static_cast<isize>(m_socket->pendingDatagramSize()), 0x0);
     QHostAddress host;

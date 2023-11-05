@@ -19,12 +19,12 @@ namespace HSA
     public:
       using SocketReceiveCallback = std::function<void (string data)>;
 
-      virtual void start(u16 port) noexcept = 0;
-      virtual void stop() noexcept = 0;
-      virtual void send(const string& data) noexcept = 0;
-      virtual void joinMulticastGroup(const string& ip) noexcept = 0;
+      virtual void start(u16 port) = 0;
+      virtual void stop() = 0;
+      virtual void send(const string& data) = 0;
+      virtual void joinMulticastGroup(const string& ip) = 0;
 
     protected:
-      virtual void read() noexcept = 0;
+      virtual void read() = 0;
   };
 } // HSA

@@ -16,13 +16,13 @@ namespace HSA
       explicit SocketQtNetwork(SocketReceiveCallback callback);
       ~SocketQtNetwork();
 
-      void start(u16 port) noexcept override;
-      void stop() noexcept override;
-      void send(const string& data) noexcept override;
-      void joinMulticastGroup(const string& ip) noexcept override;
+      void start(u16 port) override;
+      void stop() override;
+      void send(const string& data) override;
+      void joinMulticastGroup(const string& ip) override;
 
     protected:
-      void read() noexcept override;
+      void read() override;
 
     protected:
       unique_ptr<QUdpSocket> m_socket;
