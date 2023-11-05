@@ -15,9 +15,10 @@ using std::optional;
 
 namespace VT45
 {
+  using UavID = u8;
   struct UAVMetadata
   {
-    ruavp::utility::UavID id;
+    UavID id;
     string name;
   };
 
@@ -35,8 +36,6 @@ namespace VT45
 
 namespace HSA
 {
-
-
   struct Data
   {
     VT45::UAVMetadata metadata;

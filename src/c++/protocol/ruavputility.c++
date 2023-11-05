@@ -3,11 +3,11 @@
 //
 
 #include "ruavputility.h"
-#include "parameters.h"
+#include "wrapper.h"
 
 namespace ruavp::utility
 {
-  auto get_uav_id(const ruavp_header_t* h) noexcept -> u8 {
+  auto get_uav_id(const VT45::Structures::Header* h) noexcept -> u8 {
     return (h->source bitand 0x0f);
   }
 } // ruavp::utility

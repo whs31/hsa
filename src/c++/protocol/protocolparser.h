@@ -54,11 +54,11 @@ namespace HSA
       void setSecondaryTelemetryParsing(bool);
 
       [[nodiscard]] Data* datagram() const;
-      [[nodiscard]] ruavp_protocol_t* protocol() const;
-      [[nodiscard]] auto counter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>;
-      [[nodiscard]] auto addCounter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>;
+      [[nodiscard]] VT45::Structures::Protocol* protocol() const;
+      [[nodiscard]] auto counter(VT45::UavID id) -> expected<Counter*, HashtableAccessError>;
+      [[nodiscard]] auto addCounter(VT45::UavID id) -> expected<Counter*, HashtableAccessError>;
 
-      [[nodiscard]] auto uavIDList() const -> vector<ruavp::utility::UavID>;
+      [[nodiscard]] auto uavIDList() const -> vector<VT45::UavID>;
 
       void decode(const string& data) const;
 
@@ -66,14 +66,9 @@ namespace HSA
       void registerCallbacks() noexcept;
 
     private:
-      unique_ptr<ruavp_protocol_t> m_protocol;
+      unique_ptr<VT45::Structures::Protocol> m_protocol;
       unique_ptr<Data> m_datagram;
-      unordered_map<ruavp::utility::UavID, Counter> m_counters;
+      unordered_map<VT45::UavID, Counter> m_counters;
       bool m_parse_sec_tel;
   };
 } // HSA
-
-namespace ruavp::utility
-{
-
-} // ruavp::utility

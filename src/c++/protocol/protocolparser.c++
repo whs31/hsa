@@ -19,7 +19,8 @@ using std::cerr;
 using std::endl;
 #endif
 
-#define ruavp_protocol_data ruavp_protocol_t* p, const ruavp_header_t* h
+using PROTO = VT45::Structures::Protocol*;
+using HDR = const VT45::Structures::Header*;
 
 namespace callbacks
 {
@@ -32,7 +33,7 @@ namespace callbacks
 
   /* void core_ack(ruavp_protocol_data, const core_ack_t* d) {}                         */
 
-  void core_param(ruavp_protocol_data, const core_param_t* d)
+  void core_param(PROTO p, HDR h, const VT45::Structures::Core::Parameter* d)
   {
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
@@ -47,7 +48,7 @@ namespace callbacks
   /* void core_message(ruavp_protocol_data, const core_message_t* d) {}                 */
   /* void helihw_tenso(ruavp_protocol_data, const helihw_tenso_t* d) {}                 */
 
-  void navio_telemetry(ruavp_protocol_data, const navio_telemetry_t* d)
+  void navio_telemetry(PROTO p, HDR h, const VT45::Structures::NavIO::Telemetry* d)
   {
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
@@ -66,7 +67,7 @@ namespace callbacks
     self->datagram()->secondaryTelemetry.value() = *(d);
   }
 
-  void heli_telemetry(ruavp_protocol_data, const heli_telemetry_t* d)
+  void heli_telemetry(PROTO p, HDR h, const VT45::Structures::Heli::Telemetry* d)
   {
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
@@ -99,7 +100,7 @@ namespace callbacks
   /* void heli_route(ruavp_protocol_data, const heli_route_t* d) {}                             */
   /* void heli_route_point(ruavp_protocol_data, const heli_route_point_t* d) {}                 */
 
-  void heli_status(ruavp_protocol_data, const heli_status_t* d)
+  void heli_status(PROTO p, HDR h, const VT45::Structures::Heli::Status* d)
   {
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
@@ -138,6 +139,7 @@ namespace HSA
   ProtocolParser::ProtocolParser()
     : m_datagram(std::make_unique<Data>())
     , m_protocol(std::make_unique<ruavp_protocol_t>())
+    , m_parse_sec_tel(true)
   {
     this->setSecondaryTelemetryParsing(true);
     this->registerCallbacks();
@@ -155,14 +157,14 @@ namespace HSA
   }
 
   // I guarantee that this pointer is valid!
-  auto ProtocolParser::counter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>
+  auto ProtocolParser::counter(VT45::UavID id) -> expected<Counter*, HashtableAccessError>
   {
     if(not m_counters.contains(id))
       return unexpected(HashtableAccessError::NoSuchKey);
     return &(m_counters[id]);
   }
 
-  auto ProtocolParser::addCounter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>
+  auto ProtocolParser::addCounter(VT45::UavID id) -> expected<Counter*, HashtableAccessError>
   {
     if(m_counters.contains(id))
       return unexpected(HashtableAccessError::KeyAlreadyPersistsAtCreation);
@@ -170,7 +172,7 @@ namespace HSA
     return counter(id);
   }
 
-  auto ProtocolParser::uavIDList() const -> vector<ruavp::utility::UavID>
+  auto ProtocolParser::uavIDList() const -> vector<VT45::UavID>
   {
     #if defined(LIBRA_OS_WINDOWS)
     auto key_view = std::views::keys(m_counters);
@@ -184,38 +186,38 @@ namespace HSA
   }
 
   Data* ProtocolParser::datagram() const { return m_datagram.get(); }
-  ruavp_protocol_t* ProtocolParser::protocol() const { return m_protocol.get(); }
+  VT45::Structures::Protocol* ProtocolParser::protocol() const { return m_protocol.get(); }
 
   void ProtocolParser::decode(const string& data) const { ruavp_decode_process(protocol(), data.c_str(), data.size()); }
   void ProtocolParser::registerCallbacks() noexcept
   {
     *protocol() = {
         .user = this,
-        .process_core_param = +[](ruavp_protocol_data, const core_param_t* d){
+        .process_core_param = +[](PROTO p, HDR h, const VT45::Structures::Core::Parameter* d){
           callbacks::core_param(
               std::forward<decltype(p)>(p),
               std::forward<decltype(h)>(h),
               std::forward<decltype(d)>(d));
           },
-        .process_navio_telemetry = +[](ruavp_protocol_data, const navio_telemetry_t* d){
+        .process_navio_telemetry = +[](PROTO p, HDR h, const VT45::Structures::NavIO::Telemetry* d){
           callbacks::navio_telemetry(
               std::forward<decltype(p)>(p),
               std::forward<decltype(h)>(h),
               std::forward<decltype(d)>(d));
           },
-        .process_heli_telemetry = +[](ruavp_protocol_data, const heli_telemetry_t* d){
+        .process_heli_telemetry = +[](PROTO p, HDR h, const VT45::Structures::Heli::Telemetry* d){
           callbacks::heli_telemetry(
               std::forward<decltype(p)>(p),
               std::forward<decltype(h)>(h),
               std::forward<decltype(d)>(d));
           },
-        .process_heli_status = +[](ruavp_protocol_data, const heli_status_t* d){
+        .process_heli_status = +[](PROTO p, HDR h, const VT45::Structures::Heli::Status* d){
           callbacks::heli_status(
               std::forward<decltype(p)>(p),
               std::forward<decltype(h)>(h),
               std::forward<decltype(d)>(d));
           },
-        .handle_error = +[](ruavp_protocol_t* p, const void* b, usize s, int reason){
+        .handle_error = +[](PROTO p, const void* b, usize s, int reason){
           callbacks::handle_error(
               std::forward<decltype(p)>(p),
               std::forward<decltype(b)>(b),
