@@ -278,8 +278,26 @@ namespace HSA
   {
     *protocol() = {
         .user = this,
+        .process_core_ack = +[](PROTO p, HDR h, const VT45::Structures::Core::ACK* d){
+          callbacks::core_ack(
+              std::forward<decltype(p)>(p),
+              std::forward<decltype(h)>(h),
+              std::forward<decltype(d)>(d));
+          },
         .process_core_param = +[](PROTO p, HDR h, const VT45::Structures::Core::Parameter* d){
           callbacks::core_param(
+              std::forward<decltype(p)>(p),
+              std::forward<decltype(h)>(h),
+              std::forward<decltype(d)>(d));
+        },
+        .process_core_message = +[](PROTO p, HDR h, const VT45::Structures::Core::Message* d){
+          callbacks::core_message(
+              std::forward<decltype(p)>(p),
+              std::forward<decltype(h)>(h),
+              std::forward<decltype(d)>(d));
+          },
+        .process_helihw_tenso = +[](PROTO p, HDR h, const VT45::Structures::HeliHW::Tenso* d){
+          callbacks::helihw_tenso(
               std::forward<decltype(p)>(p),
               std::forward<decltype(h)>(h),
               std::forward<decltype(d)>(d));
@@ -298,6 +316,18 @@ namespace HSA
           },
         .process_heli_status = +[](PROTO p, HDR h, const VT45::Structures::Heli::Status* d){
           callbacks::heli_status(
+              std::forward<decltype(p)>(p),
+              std::forward<decltype(h)>(h),
+              std::forward<decltype(d)>(d));
+          },
+        .process_mag_telemetry = +[](PROTO p, HDR h, const VT45::Structures::MAG::Telemetry* d){
+          callbacks::mag_telemetry(
+              std::forward<decltype(p)>(p),
+              std::forward<decltype(h)>(h),
+              std::forward<decltype(d)>(d));
+          },
+        .process_vip_united_unitdata = +[](PROTO p, HDR h, const VT45::Structures::VIP::UnitedUnitdata* d){
+          callbacks::vip_united_unitdata(
               std::forward<decltype(p)>(p),
               std::forward<decltype(h)>(h),
               std::forward<decltype(d)>(d));
