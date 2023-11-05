@@ -20,6 +20,8 @@ namespace VT45
   using UavID = u8;
 } // VT45
 
+namespace HSA { class ProtocolParser; } //HSA
+
 namespace ruavp::utility
 {
   using error_function = std::function<void (void)>;
@@ -40,5 +42,6 @@ namespace ruavp::utility
   }
 
   auto get_uav_id(const VT45::Structures::Header*) noexcept -> VT45::UavID;
+  auto get_user(const VT45::Structures::Protocol*) noexcept -> HSA::ProtocolParser*;
 } // ruavp::utility
 

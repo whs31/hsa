@@ -37,7 +37,8 @@ namespace callbacks
   {
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
-    auto self = static_cast<HSA::ProtocolParser*>(p->user);
+
+    auto self = ruavp::utility::get_user(p);
     if(d->id == to_underlying(VT45::Parameter::HelicopterName))
       self->datagram()->metadata = {
           .id = static_cast<u8>(d->id),
@@ -53,7 +54,7 @@ namespace callbacks
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
 
-    auto self = static_cast<HSA::ProtocolParser*>(p->user);
+    auto self = ruavp::utility::get_user(p);
     if(not self->parseSecondaryTelemetry())
       return;
 
@@ -74,7 +75,7 @@ namespace callbacks
     if(not (h->source bitand to_underlying(VT45::RuavpClass::Heli)))
       return;
 
-    auto self = static_cast<HSA::ProtocolParser*>(p->user);
+    auto self = ruavp::utility::get_user(p);
     /* @todo
      * QString uavName = core->m_uavNames[uavId];
      * if (!uavName.size())
@@ -104,11 +105,10 @@ namespace callbacks
   {
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
-    if(not (h->source bitand to_underlying(VT45::RuavpClass::Heli)))
+    if(not(h->source bitand to_underlying(VT45::RuavpClass::Heli)))
       return;
 
-    auto self = static_cast<HSA::ProtocolParser*>(p->user);
-
+    auto self = ruavp::utility::get_user(p);
     auto id = ruavp::utility::get_uav_id(h);
     auto cnt = self->counter(id);
     if(cnt.has_value())
@@ -118,7 +118,21 @@ namespace callbacks
 
     self->datagram()->status = *(d);
   }
-  /* void mag_telemetry(ruavp_protocol_data, const mag_telemetry_t* d) {}                       */
+
+  void mag_telemetry(PROTO p, HDR h, const VT45::Structures::MAG::Telemetry* d)
+  {
+    if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
+      return;
+
+    auto self = ruavp::utility::get_user(p);
+    auto id = ruavp::utility::get_uav_id(h);
+    auto cnt = self->counter(id);
+    if(cnt.has_value())
+      cnt.value()->mag_telemetry++;
+    else
+      self->addCounter(id).value()->mag_telemetry++;
+    self->datagram()->magTelemetry = *(d);
+  }
 
   /* void vip_united_unitdata(ruavp_protocol_data, const vip_united_unitdata_t* d) {}           */
   /* void yraw_gps(ruavp_protocol_data, const yraw_gps_t* d) {}                                 */
