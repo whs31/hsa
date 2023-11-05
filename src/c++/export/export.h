@@ -9,18 +9,12 @@
 #include "hsa.h"
 #include "adapter.h"
 
-extern "C"
-{
-//  typedef struct HSA_Telemetry
-//  {
-//    double latitude;
-//  };
-}
-
 static asio::io_context io_context;
-static HSA::Adapter adapter(io_context);
+static HSA::Adapter* adapter = nullptr;
 
 extern "C" HSA_EXPORT void Run() { io_context.run(); }
+extern "C" HSA_EXPORT void CreateAdapter() { adapter = new HSA::Adapter(io_context); }
+extern "C" HSA_EXPORT void FreeAdapter() { delete adapter; adapter = nullptr; }
 
 extern "C" HSA_EXPORT const char* Version() { return PROJECT_VERSION; }
 extern "C" HSA_EXPORT bool IsWin32()

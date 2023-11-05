@@ -19,7 +19,7 @@ namespace HSA
 {
   constexpr const char* CFG_FILENAME = "cfg.json";
 
-  const bidirectional_map<Config::ConfigKey, string> EnumerationDictionary = {
+  const static bidirectional_map<Config::ConfigKey, string> EnumerationDictionary = {
     { HSA::Config::VT45IPv4, "vt45_ip" },
     { HSA::Config::VT45Port, "vt45_port" },
     { HSA::Config::VT45ListenPort, "vt45_listen_port" },

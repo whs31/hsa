@@ -2,13 +2,11 @@
 // Created by whs31 on 11/1/2023.
 //
 
-#include "adapter.h"
-//#include "export/export.h"
+#include "export/export.h"
 
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>
 #endif
-
 
 int main(int argc, char** argv)
 {
@@ -22,9 +20,9 @@ int main(int argc, char** argv)
    * io_context.run();
    */
 
-  thread_local asio::io_context io_context;
-  thread_local HSA::Adapter adapter(io_context);
-  io_context.run();
+  CreateAdapter();
+  Run();
+  FreeAdapter();
 
   return EXIT_SUCCESS;
 }
