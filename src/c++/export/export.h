@@ -17,8 +17,7 @@ extern "C"
 //  };
 }
 
-static const char* pv = PROJECT_VERSION;
-extern "C" HSA_EXPORT const char* Version() { return pv; }
+extern "C" HSA_EXPORT const char* Version() { return PROJECT_VERSION; }
 extern "C" HSA_EXPORT bool IsWin32()
 {
   #if defined(LIBRA_OS_WINDOWS)
