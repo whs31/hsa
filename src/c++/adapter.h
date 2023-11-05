@@ -31,6 +31,7 @@ namespace HSA
       [[nodiscard]] ProtocolParser* parser() const;
 
       [[nodiscard]] HSA_Telemetry telemetryUnmangled() const;
+      void setTelemetryUnmangledCallback(DataReadyCallback);
 
     private:
       void socketRead(const string& data);

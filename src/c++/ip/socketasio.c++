@@ -3,11 +3,11 @@
 //
 
 #include "socketasio.h"
+#include <asio/ip/multicast.hpp>
+#include <asio/ip/address_v4.hpp>
 
 #if defined(HSA_ENABLE_LOGGING)
 #include <iostream>
-#include <asio/ip/multicast.hpp>
-#include <asio/ip/address_v4.hpp>
 
 using std::cerr;
 using std::cout;

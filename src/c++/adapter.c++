@@ -7,6 +7,8 @@
 #include "config/config.h"
 #include "ip/socketasio.h"
 #include "protocol/protocolparser.h"
+#include "protocol/data.h"
+#include "export/dgram.h"
 
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>
@@ -79,4 +81,15 @@ namespace HSA
     CLILogger::LogTelemetry(parser());
     #endif
   }
+
+  HSA_Telemetry Adapter::telemetryUnmangled() const
+  {
+    return {
+      .latitude = this->parser()->datagram()->telemetry.latitude,
+      .longitude = this->parser()->datagram()->telemetry.longitude,
+      .altitude = this->parser()->datagram()->telemetry.altitude
+    };
+  }
+
+  void Adapter::setTelemetryUnmangledCallback(Adapter::DataReadyCallback c) { m_callback = std::move(c); }
 } // HSA

@@ -8,6 +8,14 @@
 #include <iostream>
 #endif
 
+#include <iostream>
+
+void readyRead()
+{
+  auto a = Read();
+  std::cout << a.latitude << " " << a.longitude << " " << a.altitude << std::endl;
+}
+
 int main(int argc, char** argv)
 {
   #if defined HSA_ENABLE_LOGGING
@@ -21,6 +29,7 @@ int main(int argc, char** argv)
    */
 
   CreateAdapter();
+  SetCallback(readyRead);
   Run();
   FreeAdapter();
 

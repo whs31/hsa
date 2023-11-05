@@ -9,6 +9,7 @@
 
 extern "C"
 {
+  typedef void (*HSA_TelemetryCallback)();
   struct HSA_EXPORT HSA_Telemetry
   {
     f64 latitude;

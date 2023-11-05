@@ -76,7 +76,9 @@ namespace callbacks
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
     auto message = string(reinterpret_cast<const char*>(d->msg));
+    #if defined HSA_ENABLE_LOGGING
     cerr << message << endl;
+    #endif
     auto self = ruavp::utility::get_user(p);
     auto id = ruavp::utility::get_uav_id(h);
     auto cnt = self->counter(id);
