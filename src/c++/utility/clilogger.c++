@@ -38,8 +38,8 @@ namespace HSA
     if(counter_res.has_value())
       counter = counter_res.value();
 
-    cout << left << "UAV ID COUNT: " << "\033[0;33m"  << uav_ids.size()         << "\033[0m"
-                 << ", UAV ID USED:" << "\033[0;33m " << p->uavIDList().front() << "\033[0m"
+    cout << left << "UAV ID COUNT: " << "\033[0;33m"  << uav_ids.size()                      << "\033[0m"
+                 << ", UAV ID USED:" << "\033[0;33m " << static_cast<i32>(uav_ids.front())   << "\033[0m"
          << "\n";
     if(not counter_res.has_value())
     {
@@ -60,6 +60,7 @@ namespace HSA
   void CLILogger::LogTelemetry(ProtocolParser* p)
   {
     #if defined HSA_ENABLE_LOGGING
+    cout << "\n";
     cout << left << setw(10) << "LAT"       << "\033[0;35m" << setw(8) << p->datagram()->telemetry.latitude      << "\033[0m "
          << left << setw(10) << "LON"       << "\033[0;35m" << setw(8) << p->datagram()->telemetry.longitude     << "\033[0m "
          << left << setw(10) << "ALTI"      << "\033[0;35m" << setw(8) << p->datagram()->telemetry.altitude      << "\033[0m "

@@ -60,8 +60,8 @@ namespace callbacks
     auto cnt = self->counter(id);
     if(cnt.has_value())
       cnt.value()->navio_telemetry++;
-//    else
-//      self->addCounter(id).value()->navio_telemetry++;
+    else
+      self->addCounter(id).value()->navio_telemetry++;
 
     self->datagram()->secondaryTelemetry.value() = {
       .altitude_barometric = d->altitude_baro,
@@ -122,8 +122,8 @@ namespace callbacks
     auto cnt = self->counter(id);
     if(cnt.has_value())
       cnt.value()->heli_telemetry++;
-//    else
-//      self->addCounter(id).value()->heli_telemetry++;
+    else
+      self->addCounter(id).value()->heli_telemetry++;
 
     self->datagram()->telemetry = {
         .latitude = d->latitude,
@@ -179,8 +179,8 @@ namespace callbacks
     auto cnt = self->counter(id);
     if(cnt.has_value())
       cnt.value()->heli_status++;
-//    else
-//      self->addCounter(id).value()->heli_status++;
+    else
+      self->addCounter(id).value()->heli_status++;
 
     self->datagram()->status = {
         .last_received_timestamp = d->land_data_ts,
@@ -284,7 +284,7 @@ namespace HSA
 
   auto ProtocolParser::addCounter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>
   {
-    if(not m_counters.contains(id))
+    if(m_counters.contains(id))
       return unexpected(HashtableAccessError::KeyAlreadyPersistsAtCreation);
     m_counters.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple());
     return counter(id);
