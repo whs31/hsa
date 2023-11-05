@@ -4,7 +4,7 @@
 
 #include "clilogger.h"
 #include "protocol/protocolparser.h"
-#include "protocol/datagram.h"
+#include "protocol/data.h"
 
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>

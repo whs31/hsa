@@ -6,7 +6,7 @@
   */
 
 #include "protocolparser.h"
-#include "datagram.h"
+#include "data.h"
 #include "parameters.h"
 
 #include <ranges>
@@ -63,45 +63,7 @@ namespace callbacks
     else
       self->addCounter(id).value()->navio_telemetry++;
 
-    self->datagram()->secondaryTelemetry.value() = {
-      .altitude_barometric = d->altitude_baro,
-      .altitude_gps = d->altitude_gps,
-      .altitude_radio = d->altitude_radio,
-      .gps_course_error = d->gps_course_variance,
-      .gps_velocity_error = d->gps_speed_variance,
-      .roll_velocity = d->gx,
-      .roll_velocity_error = d->gx_err,
-      .pitch_velocity = d->gy,
-      .pitch_velocity_error = d->gy_err,
-      .yaw_velocity = d->gz,
-      .yaw_velocity_error = d->gz_err,
-      .position_x = d->x,
-      .position_x_error = d->pos_variance_x,
-      .position_x_target = d->x_dst,
-      .position_y = d->y,
-      .position_y_error = d->pos_variance_y,
-      .position_y_target = d->y_dst,
-      .position_z_error = d->pos_variance_z,
-      .signal_roll = d->rc_roll,
-      .signal_pitch = d->rc_pitch,
-      .signal_yaw = d->rc_yaw,
-      .signal_throttle = d->rc_throttle,
-      .target_roll_velocity = d->sp_gx,
-      .target_pitch_velocity = d->sp_gy,
-      .target_yaw_velocity = d->sp_gz,
-      .target_altitude = d->sp_height,
-      .target_roll = d->sp_roll,
-      .target_pitch = d->sp_pitch,
-      .target_yaw = d->sp_yaw,
-      .target_vx = d->sp_vx,
-      .target_vy = d->sp_vy,
-      .target_vz = d->sp_vz,
-      .target_position_x = d->sp_x,
-      .target_position_y = d->sp_y,
-      .velocity_x_error = d->vel_variance_x,
-      .velocity_y_error = d->vel_variance_y,
-      .velocity_z_error = d->vel_variance_z
-    };
+    self->datagram()->secondaryTelemetry.value() = *(d);
   }
 
   void heli_telemetry(ruavp_protocol_data, const heli_telemetry_t* d)
@@ -125,41 +87,12 @@ namespace callbacks
     else
       self->addCounter(id).value()->heli_telemetry++;
 
-    self->datagram()->telemetry = {
-        .latitude = d->latitude,
-        .longitude = d->longitude,
-        .latitude_d = d->dlatitude,
-        .longitude_d = d->longitude,
-        .altitude = d->altitude,
-        .altitude_abs = d->altitude_abs,
-        .altitude_d = d->daltitude,
-        .timestamp = d->ts,
-        .acceleration_x = d->ax,
-        .acceleration_y = d->ay,
-        .acceleration_z = d->az,
-        .col_pitch = d->colpitch,
-        .pitch = d->pitch,
-        .roll = d->roll,
-        .yaw = d->yaw,
-        .target_altitude = d->target_altitude,
-        .target_speed = d->target_speed,
-        .throttle = d->throttle,
-        .vx = d->vx,
-        .vy = d->vy,
-        .vz = d->vz,
-        .route_point = d->route_point,
-        .route = d->route,
-        .rpm_engine = d->rpm_engine,
-        .rpm_engine2 = d->rpm_engine,
-        .rpm_rotor = d->rpm_rotor,
-        .rpm_tail = d->rpm_tail,
-        .engine_state = d->engine_state,
-        .mode = d->mode,
-        .overriders_state = d->overriders_state,
-        .override_altitude = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::Altitude)))),
-        .override_velocity = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::Speed)))),
-        .override_yaw = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::Yaw)))),
-        .override_vz = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::VZ))))
+    self->datagram()->telemetry = *(d);
+    self->datagram()->telemetryOverriders = {
+      .override_altitude = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::Altitude)))),
+      .override_velocity = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::Speed)))),
+      .override_yaw = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::Yaw)))),
+      .override_vz = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::VZ))))
     };
   }
 
@@ -182,60 +115,7 @@ namespace callbacks
     else
       self->addCounter(id).value()->heli_status++;
 
-    self->datagram()->status = {
-        .last_received_timestamp = d->land_data_ts,
-        .time_left = d->time_left,
-        .voltage = d->voltage,
-        .temperature_engine_left = d->temperature_engine_cylinder_left,
-        .temperature_engine_right = d->temperature_engine_cylinder_right,
-        .temperature_main_reductor = d->temperature_main_reductor,
-        .temperature_servo_sp_left = d->temperature_servo_swashplate_left,
-        .temperature_servo_sp_rear = d->temperature_servo_swashplate_rear,
-        .temperature_servo_sp_right = d->temperature_servo_swashplate_right,
-        .temperature_servo_tail = d->temperature_servo_tail,
-        .temperature_servo_throttle = d->temperature_servo_throttle,
-        .temperature_tail_reductor = d->temperature_tail_reductor,
-        .memsic_state = d->memsic_status,
-        .altimeter_state = d->altimeter_state,
-        .autopilot_state = d->autopilot_state,
-        .bano_1_state = d->bano1_state,
-        .bano_2_state = d->bano2_state,
-        .barometer_state = d->barometer_state,
-        .filesystem_status = d->fs_status,
-        .fuel = d->fuel,
-        .fuel_sensor_state = d->fuel_sensor_state,
-        .gps_1_fixtype = d->gps1_fixtype,
-        .gps_1_noise = d->gps1_noise,
-        .gps_1_satellites = d->gps1_satellites,
-        .gps_1_state = d->gps1_noise,
-        .ignition_state = d->ignition_state,
-        .imu_1_state = d->imu1_state,
-        .imu_2_state = d->imu2_state,
-        .mag_1_state = d->mag1_state,
-        .modem_state = d->modem_state,
-        .rc_state = d->rc_state,
-        .rpm_engine_2_state = d->rpm_engine2_state,
-        .rpm_engine_state = d->rpm_engine_state,
-        .rpm_rotor_state = d->rpm_rotor_state,
-        .rpm_tail_state = d->rpm_tail_state,
-        .servo_sp_left_state = d->servo_swashplate_left_state,
-        .servo_sp_rear_state = d->servo_swashplate_rear_state,
-        .servo_sp_right_state = d->servo_swashplate_right_state,
-        .servo_tail_state = d->servo_tail_state,
-        .servo_throttle_state = d->servo_throttle_state,
-        .t_sensor_engine_left_state = d->temperature_engine_cylinder_left_state,
-        .t_sensor_engine_right_state = d->temperature_engine_cylinder_right_state,
-        .t_sensor_main_reductor_state = d->temperature_main_reductor_state,
-        .t_sensor_servo_sp_left_state = d->temperature_servo_swashplate_left_state,
-        .t_sensor_servo_sp_rear_state = d->temperature_servo_swashplate_rear_state,
-        .t_sensor_servo_sp_right_state = d->temperature_servo_swashplate_right_state,
-        .t_sensor_servo_tail_state = d->temperature_servo_tail_state,
-        .t_sensor_servo_throttle_state = d->temperature_servo_throttle_state,
-        .t_sensor_servo_tail_reductor_state = d->temperature_tail_reductor_state,
-        .tenso_state = d->tenso_state,
-        .trasser_state = d->trasser_state,
-        .xboard_state = d->xboard_state,
-    };
+    self->datagram()->status = *(d);
   }
   /* void mag_telemetry(ruavp_protocol_data, const mag_telemetry_t* d) {}                       */
 
@@ -256,7 +136,7 @@ namespace callbacks
 namespace HSA
 {
   ProtocolParser::ProtocolParser()
-    : m_datagram(std::make_unique<Datagram>())
+    : m_datagram(std::make_unique<Data>())
     , m_protocol(std::make_unique<ruavp_protocol_t>())
   {
     this->setSecondaryTelemetryParsing(true);
@@ -303,7 +183,7 @@ namespace HSA
     #endif
   }
 
-  Datagram* ProtocolParser::datagram() const { return m_datagram.get(); }
+  Data* ProtocolParser::datagram() const { return m_datagram.get(); }
   ruavp_protocol_t* ProtocolParser::protocol() const { return m_protocol.get(); }
 
   void ProtocolParser::decode(const string& data) const { ruavp_decode_process(protocol(), data.c_str(), data.size()); }

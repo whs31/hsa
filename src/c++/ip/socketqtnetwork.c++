@@ -39,7 +39,7 @@ namespace HSA
 
     #if defined HSA_ENABLE_LOGGING
     cout << "Socket start" << (err ? "ed successfully" : "up failed") << " on "
-         << m_socket->localAddress().toString().toStdString() << endl;
+         << m_socket->localAddress().toString().toStdString() << ":" << m_port << endl;
     #endif
   }
 

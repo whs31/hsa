@@ -4,6 +4,8 @@
 
 #pragma once
 
+#if (0)
+
 #include <string>
 #include <optional>
 #include <Libra/Global>
@@ -167,3 +169,5 @@ namespace HSA
     optional<UAV::TelemetrySecondary> secondaryTelemetry;
   };
 } // HSA
+
+#endif

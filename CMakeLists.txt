@@ -42,7 +42,7 @@ target_sources(${PROJECT_NAME}
     src/c++/protocol/ruavputility.c++
     src/c++/protocol/protocolparser.h
     src/c++/protocol/protocolparser.c++
-    src/c++/protocol/datagram.h
+    src/c++/protocol/data.h
     src/c++/protocol/parameters.h
     src/c++/protocol/wrapper.h
     src/c++/ip/isocket.h

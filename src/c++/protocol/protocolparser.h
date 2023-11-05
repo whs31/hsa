@@ -24,7 +24,7 @@ using std::vector;
 
 namespace HSA
 {
-  struct Datagram;
+  struct Data;
   class ProtocolParser
   {
     public:
@@ -53,7 +53,7 @@ namespace HSA
       [[nodiscard]] bool parseSecondaryTelemetry() const;
       void setSecondaryTelemetryParsing(bool);
 
-      [[nodiscard]] Datagram* datagram() const;
+      [[nodiscard]] Data* datagram() const;
       [[nodiscard]] ruavp_protocol_t* protocol() const;
       [[nodiscard]] auto counter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>;
       [[nodiscard]] auto addCounter(ruavp::utility::UavID id) -> expected<Counter*, HashtableAccessError>;
@@ -67,7 +67,7 @@ namespace HSA
 
     private:
       unique_ptr<ruavp_protocol_t> m_protocol;
-      unique_ptr<Datagram> m_datagram;
+      unique_ptr<Data> m_datagram;
       unordered_map<ruavp::utility::UavID, Counter> m_counters;
       bool m_parse_sec_tel;
   };
