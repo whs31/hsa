@@ -37,7 +37,7 @@ namespace callbacks
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
-    if(d->id == to_underlying(HSA::VT45Parameter::HelicopterName))
+    if(d->id == to_underlying(VT45::Parameter::HelicopterName))
       self->datagram()->metadata = {
           .id = static_cast<u8>(d->id),
           .name = string(reinterpret_cast<const char*>(d->data))
@@ -108,7 +108,7 @@ namespace callbacks
   {
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
-    if(not (h->source bitand to_underlying(HSA::VT45Class::Heli)))
+    if(not (h->source bitand to_underlying(VT45::RuavpClass::Heli)))
       return;
 
     auto self = static_cast<HSA::ProtocolParser*>(p->user);
@@ -156,10 +156,10 @@ namespace callbacks
         .engine_state = d->engine_state,
         .mode = d->mode,
         .overriders_state = d->overriders_state,
-        .override_altitude = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::Altitude)))),
-        .override_velocity = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::Speed)))),
-        .override_yaw = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::Yaw)))),
-        .override_vz = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(HSA::VT45OverrideState::VZ))))
+        .override_altitude = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::Altitude)))),
+        .override_velocity = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::Speed)))),
+        .override_yaw = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::Yaw)))),
+        .override_vz = static_cast<u8>((d->overriders_state bitand (1 << to_underlying(VT45::OverrideState::VZ))))
     };
   }
 
@@ -170,7 +170,7 @@ namespace callbacks
   {
     if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
       return;
-    if(not (h->source bitand to_underlying(HSA::VT45Class::Heli)))
+    if(not (h->source bitand to_underlying(VT45::RuavpClass::Heli)))
       return;
 
     auto self = static_cast<HSA::ProtocolParser*>(p->user);

@@ -44,6 +44,7 @@ target_sources(${PROJECT_NAME}
     src/c++/protocol/protocolparser.c++
     src/c++/protocol/datagram.h
     src/c++/protocol/parameters.h
+    src/c++/protocol/wrapper.h
     src/c++/ip/isocket.h
     src/c++/ip/socketqtnetwork.h
     src/c++/ip/socketqtnetwork.c++

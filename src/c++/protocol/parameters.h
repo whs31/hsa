@@ -13,30 +13,26 @@ extern "C"
 #include <vt45-params.h>
 }
 
-namespace HSA
+namespace VT45
 {
-  enum class VT45Parameter
+  enum class Parameter
   {
     HelicopterName = PARAM_HELINAME
   };
 
-  enum class VT45Class
+  enum class RuavpClass
   {
     Land = CLASS_LAND,
     Heli = CLASS_HELI,
     HeliHW = CLASS_HELIHW,
-    Ext = CLASS_EXT
+    Ext = CLASS_EXT,
+    LandMax = CLASS_LAND_MAX,
+    HeliMax = CLASS_HELI_MAX,
+    HeliHWMax = CLASS_HELIHW_MAX,
+    ExtMax = CLASS_EXT_MAX
   };
 
-  enum class VT45ClassMax
-  {
-    Land = CLASS_LAND_MAX,
-    Heli = CLASS_HELI_MAX,
-    HeliHW = CLASS_HELIHW_MAX,
-    Ext = CLASS_EXT_MAX
-  };
-
-  enum class VT45OverrideState
+  enum class OverrideState
   {
     Speed = HELI_OVERRIDER_SPEED,
     Altitude = HELI_OVERRIDER_ALTITUDE,
@@ -44,4 +40,4 @@ namespace HSA
     Yaw = HELI_OVERRIDER_YAW,
     Last = HELI_OVERRIDER__LAST
   };
-} // HSA
+}
