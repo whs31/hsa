@@ -60,8 +60,8 @@ namespace callbacks
     auto cnt = self->counter(id);
     if(cnt.has_value())
       cnt.value()->navio_telemetry++;
-    else
-      self->addCounter(id).value()->navio_telemetry++;
+//    else
+//      self->addCounter(id).value()->navio_telemetry++;
 
     self->datagram()->secondaryTelemetry.value() = {
       .altitude_barometric = d->altitude_baro,
@@ -122,8 +122,8 @@ namespace callbacks
     auto cnt = self->counter(id);
     if(cnt.has_value())
       cnt.value()->heli_telemetry++;
-    else
-      self->addCounter(id).value()->heli_telemetry++;
+//    else
+//      self->addCounter(id).value()->heli_telemetry++;
 
     self->datagram()->telemetry = {
         .latitude = d->latitude,
@@ -179,8 +179,8 @@ namespace callbacks
     auto cnt = self->counter(id);
     if(cnt.has_value())
       cnt.value()->heli_status++;
-    else
-      self->addCounter(id).value()->heli_status++;
+//    else
+//      self->addCounter(id).value()->heli_status++;
 
     self->datagram()->status = {
         .last_received_timestamp = d->land_data_ts,
@@ -294,7 +294,7 @@ namespace HSA
   {
     #if defined(LIBRA_OS_WINDOWS)
     auto key_view = std::views::keys(m_counters);
-    return vector<ruavp::utility::UavID>(key_view.begin(), key_view.end());
+    return { key_view.begin(), key_view.end() };
     #else
     vector<ruavp::utility::UavID> ret;
     for(const auto& [key, _] : m_counters)

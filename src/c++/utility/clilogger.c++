@@ -26,11 +26,27 @@ namespace HSA
   {
     #if defined HSA_ENABLE_LOGGING
     auto uav_ids = p->uavIDList();
-    auto counter = p->counter(uav_ids.front()).value();
+    if(uav_ids.empty())
+    {
+      cout << "NO VALID COUNTERS" << "\n";
+      cout << "COUNTER LIST IS EMPTY" << "\n";
+      return;
+    }
+
+    auto counter_res = p->counter(uav_ids.front());
+    ProtocolParser::Counter* counter;
+    if(counter_res.has_value())
+      counter = counter_res.value();
 
     cout << left << "UAV ID COUNT: " << "\033[0;33m"  << uav_ids.size()         << "\033[0m"
                  << ", UAV ID USED:" << "\033[0;33m " << p->uavIDList().front() << "\033[0m"
          << "\n";
+    if(not counter_res.has_value())
+    {
+      cout << "NO VALID COUNTERS" << "\n";
+      return;
+    }
+
     cout << left << setw(10) << "HELIHW"    << "\033[0;33m" << setw(8) << counter->helihw_tenso         << "\033[0m "
          << left << setw(10) << "NAVIO"     << "\033[0;31m" << setw(8) << counter->navio_telemetry      << "\033[0m "
          << left << setw(10) << "HELI TEL"  << "\033[0;33m" << setw(8) << counter->heli_telemetry       << "\033[0m "
