@@ -19,9 +19,10 @@ using std::cerr;
 
 namespace HSA
 {
-  Adapter::Adapter(asio::io_context& context)
+  Adapter::Adapter(asio::io_context& context, DataReadyCallback callback)
     : m_config(std::make_unique<Config>())
     , m_protocol_parser(std::make_unique<ProtocolParser>())
+    , m_callback(callback)
   {
     if(not config()->value(Config::VT45ListenPort))
     {
@@ -69,6 +70,8 @@ namespace HSA
   void Adapter::socketRead(const string& data)
   {
     parser()->decode(data);
+    if(m_callback)
+      m_callback();
 
     #if defined HSA_ENABLE_LOGGING
     CLILogger::LogClearLines(6);

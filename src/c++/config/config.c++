@@ -20,10 +20,10 @@ namespace HSA
   constexpr const char* CFG_FILENAME = "cfg.json";
 
   const bidirectional_map<Config::ConfigKey, string> EnumerationDictionary = {
-    { Config::ConfigKey::VT45IPv4, "vt45_ip" },
-    { Config::ConfigKey::VT45Port, "vt45_port" },
-    { Config::ConfigKey::VT45ListenPort, "vt45_listen_port" },
-    { Config::ConfigKey::VT45MulticastGroup, "vt45_multicast_group" }
+    { HSA::Config::VT45IPv4, "vt45_ip" },
+    { HSA::Config::VT45Port, "vt45_port" },
+    { HSA::Config::VT45ListenPort, "vt45_listen_port" },
+    { HSA::Config::VT45MulticastGroup, "vt45_multicast_group" }
   };
 
   Config::Config()

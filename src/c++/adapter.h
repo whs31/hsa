@@ -11,6 +11,8 @@
 using std::string;
 using std::unique_ptr;
 
+struct HSA_Telemetry;
+
 namespace HSA
 {
   class Config;
@@ -19,12 +21,16 @@ namespace HSA
   class Adapter
   {
     public:
-      Adapter(asio::io_context& context);
+      using DataReadyCallback = std::function<void (void)>;
+
+      Adapter(asio::io_context& context, DataReadyCallback callback = {});
       ~Adapter();
 
       [[nodiscard]] Config* config() const;
       [[nodiscard]] ISocket* socket() const;
       [[nodiscard]] ProtocolParser* parser() const;
+
+      [[nodiscard]] HSA_Telemetry telemetryUnmangled() const;
 
     private:
       void socketRead(const string& data);
@@ -33,6 +39,7 @@ namespace HSA
       unique_ptr<Config> m_config;
       unique_ptr<ISocket> m_socket;
       unique_ptr<ProtocolParser> m_protocol_parser;
+      DataReadyCallback m_callback;
   };
 } // HSA
 
