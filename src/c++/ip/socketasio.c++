@@ -16,17 +16,24 @@ using std::endl;
 
 namespace HSA
 {
-  SocketASIO::SocketASIO(ISocket::SocketReceiveCallback callback)
+  SocketASIO::SocketASIO(ISocket::SocketReceiveCallback callback, asio::io_context& context)
     : m_callback(std::move(callback))
-    , m_context()
-    , m_socket(m_context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 1110))
+    , m_socket(context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 1110))
     , m_endpoint(m_socket.local_endpoint())
   {}
 
+  SocketASIO::~SocketASIO()
+  {
+    this->stop();
+  }
+
   void SocketASIO::start(u16 port)
   {
+    this->stop();
+    #if defined HSA_ENABLE_LOGGING
+    cout << "Starting UDP socket on port " << port << endl;
+    #endif
     m_endpoint = asio::ip::udp::endpoint(asio::ip::udp::v4(), port);
-    m_context.run();
     try
     {
       m_socket.open(m_endpoint.protocol());
@@ -37,13 +44,19 @@ namespace HSA
     {
       cerr << e.what() << endl;
     }
+    #if defined HSA_ENABLE_LOGGING
+    cout << "Socket started on " << m_socket.local_endpoint().address().to_string()
+         << ":" << m_socket.local_endpoint().port() << endl;
+    #endif
   }
 
   void SocketASIO::stop()
   {
     m_socket.close();
-    m_context.stop();
     m_endpoint = {};
+    #if defined HSA_ENABLE_LOGGING
+    cout << "Closing connection" << endl;
+    #endif
   }
 
   void SocketASIO::send(const string& data)

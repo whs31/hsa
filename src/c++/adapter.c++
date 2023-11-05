@@ -5,7 +5,8 @@
 #include "adapter.h"
 #include <functional>
 #include "config/config.h"
-#include "ip/socketqtnetwork.h"
+#include "ip/socketqtnetwork.h" // TODO remove
+#include "ip/socketasio.h"
 #include "protocol/protocolparser.h"
 
 #if defined HSA_ENABLE_LOGGING
@@ -20,8 +21,6 @@ namespace HSA
 {
   Adapter::Adapter()
     : m_config(std::make_unique<Config>())
-    , m_socket(std::make_unique<SocketQtNetwork>([this](auto&& PH1)
-              { socketRead(std::forward<decltype(PH1)>(PH1)); }))
     , m_protocol_parser(std::make_unique<ProtocolParser>())
   {
     if(not config()->value(Config::VT45ListenPort))
@@ -41,6 +40,11 @@ namespace HSA
 
       return;
     }
+
+    asio::io_context io_context;
+    m_socket = std::make_unique<SocketASIO>([this](auto&& PH1) { this->socketRead(std::forward<decltype(PH1)>(PH1)); },
+                                            io_context);
+    io_context.run();
 
     socket()->start(std::get<u16>(config()->value(Config::VT45ListenPort).value()));
     socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));

@@ -15,7 +15,7 @@ namespace HSA
   class SocketASIO : public ISocket
   {
     public:
-      explicit SocketASIO(SocketReceiveCallback callback);
+      explicit SocketASIO(SocketReceiveCallback callback, asio::io_context& context);
       ~SocketASIO();
 
       void start(u16 port) override;
@@ -30,7 +30,6 @@ namespace HSA
     protected:
       SocketReceiveCallback m_callback;
       array<char, 1024> m_buffer;
-      asio::io_context m_context;
       asio::ip::udp::socket m_socket;
       asio::ip::udp::endpoint m_endpoint;
   };
