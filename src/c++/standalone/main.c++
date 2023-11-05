@@ -16,7 +16,7 @@ int main(int argc, char** argv)
   #endif
 
   thread_local asio::io_context io_context;
-  HSA::Adapter adapter(io_context);
+  thread_local HSA::Adapter adapter(io_context);
   io_context.run();
 
   return EXIT_SUCCESS;
