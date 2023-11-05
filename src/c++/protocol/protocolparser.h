@@ -42,12 +42,16 @@ namespace HSA
         atomic<usize> core_ack;
         atomic<usize> core_message;
         atomic<usize> core_param;
+        atomic<usize> helihw_tenso;
+        atomic<usize> navio_telemetry;
         atomic<usize> heli_status;
         atomic<usize> heli_telemetry;
-        atomic<usize> navio_telemetry;
+        // TODO heli_route heli_route_point
         atomic<usize> mag_telemetry;
         atomic<usize> vip_united_unitdata;
-        atomic<usize> helihw_tenso;
+        // TODO yraw_gps zzf_ads1_raw zzn_servo_feedback
+        // TODO zzn_brp1 zzn_brp2 zzn_brp4 zzn_engine_telem
+        // TODO zzn_pps_feedback zzo_bins
       };
 
       ProtocolParser();

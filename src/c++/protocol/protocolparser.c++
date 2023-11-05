@@ -206,6 +206,7 @@ namespace callbacks
       self->addCounter(id).value()->vip_united_unitdata++;
     self->datagram()->vipUnitedUnitdata = *(d);
   }
+
   /* void yraw_gps(ruavp_protocol_data, const yraw_gps_t* d) {}                                 */
   /* void zzf_ads1_raw(ruavp_protocol_data, const zzf_ads1_raw_t* d) {}                         */
   /* void zzn_servo_feedback(ruavp_protocol_data, const zzn_servo_feedback_t* d) {}             */
