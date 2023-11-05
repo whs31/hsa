@@ -12,6 +12,8 @@
 #include <ranges>
 #include <Libra/Platform>
 
+#include "export/export.h" // TODO, BUG: this is workaround because cmake doesn't want to compile this file.
+
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>
 using std::cout;

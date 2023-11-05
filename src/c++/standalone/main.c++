@@ -3,6 +3,7 @@
 //
 
 #include "adapter.h"
+#include "export/export.h"
 
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>

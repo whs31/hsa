@@ -9,6 +9,7 @@ project(HSA
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS YES CACHE BOOL "Export all symbols")
 
 option(HSA_ENABLE_LOGGING "Enable CLI output" ON)
 option(HSA_STANDALONE "Build standalone application. If not set, dynamic library will be built instead" OFF)
@@ -22,11 +23,12 @@ else()
 endif()
 
 target_sources(${PROJECT_NAME}
+  PUBLIC
+    src/c++/export/hsa.h
+    src/c++/export/export.h
   PRIVATE
     src/c++/adapter.h
     src/c++/adapter.c++
-    src/c++/export/hsa.h
-    src/c++/export/export.h
     src/c++/config/config.h
     src/c++/config/config.c++
     src/c++/protocol/ruavputility.h
