@@ -43,6 +43,7 @@ namespace HSA
     VT45::Structures::Heli::TelemetryOverriders telemetryOverriders;
     VT45::Structures::Heli::Status status;
     VT45::Structures::MAG::Telemetry magTelemetry;
+    VT45::Structures::VIP::UnitedUnitdata vipUnitedUnitdata;
     optional<VT45::Structures::NavIO::Telemetry> secondaryTelemetry;
   };
 } // HSA

@@ -134,7 +134,20 @@ namespace callbacks
     self->datagram()->magTelemetry = *(d);
   }
 
-  /* void vip_united_unitdata(ruavp_protocol_data, const vip_united_unitdata_t* d) {}           */
+  void vip_united_unitdata(PROTO p, HDR h, const VT45::Structures::VIP::UnitedUnitdata* d)
+  {
+    if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
+      return;
+
+    auto self = ruavp::utility::get_user(p);
+    auto id = ruavp::utility::get_uav_id(h);
+    auto cnt = self->counter(id);
+    if(cnt.has_value())
+      cnt.value()->vip_united_unitdata++;
+    else
+      self->addCounter(id).value()->vip_united_unitdata++;
+    self->datagram()->vipUnitedUnitdata = *(d);
+  }
   /* void yraw_gps(ruavp_protocol_data, const yraw_gps_t* d) {}                                 */
   /* void zzf_ads1_raw(ruavp_protocol_data, const zzf_ads1_raw_t* d) {}                         */
   /* void zzn_servo_feedback(ruavp_protocol_data, const zzn_servo_feedback_t* d) {}             */
