@@ -39,6 +39,9 @@ namespace HSA
       {
         Counter();
 
+        atomic<usize> core_ack;
+        atomic<usize> core_message;
+        atomic<usize> core_param;
         atomic<usize> heli_status;
         atomic<usize> heli_telemetry;
         atomic<usize> navio_telemetry;

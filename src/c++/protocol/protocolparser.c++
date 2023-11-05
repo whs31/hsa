@@ -31,7 +31,24 @@ namespace callbacks
     #endif
   };
 
-  /* void core_ack(ruavp_protocol_data, const core_ack_t* d) {}                         */
+  void core_ack(PROTO p, HDR h, const VT45::Structures::Core::ACK* d)
+  {
+    if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
+      return;
+    auto self = ruavp::utility::get_user(p);
+    auto id = ruavp::utility::get_uav_id(h);
+    auto cnt = self->counter(id);
+    if(cnt.has_value())
+      cnt.value()->core_ack++;
+    else
+      self->addCounter(id).value()->core_ack++;
+
+    /*
+     * TODO
+     * core->sendReplyRequest(packet->cid, packet->result);
+     * core->m_routeReceiver->setAck(*packet);
+     */
+  }
 
   void core_param(PROTO p, HDR h, const VT45::Structures::Core::Parameter* d)
   {
@@ -39,6 +56,12 @@ namespace callbacks
       return;
 
     auto self = ruavp::utility::get_user(p);
+    auto id = ruavp::utility::get_uav_id(h);
+    auto cnt = self->counter(id);
+    if(cnt.has_value())
+      cnt.value()->core_param++;
+    else
+      self->addCounter(id).value()->core_param++;
     if(d->id == to_underlying(VT45::Parameter::HelicopterName))
       self->datagram()->metadata = {
           .id = static_cast<u8>(d->id),
@@ -46,7 +69,22 @@ namespace callbacks
       };
   }
 
-  /* void core_message(ruavp_protocol_data, const core_message_t* d) {}                 */
+  void core_message(PROTO p, HDR h, const VT45::Structures::Core::Message* d)
+  {
+    if(ruavp::utility::any_of_pointers_invalid_signaling(p, h, d, ErrorFunction))
+      return;
+    auto message = string(reinterpret_cast<const char*>(d->msg));
+    cerr << message << endl;
+    auto self = ruavp::utility::get_user(p);
+    auto id = ruavp::utility::get_uav_id(h);
+    auto cnt = self->counter(id);
+    if(cnt.has_value())
+      cnt.value()->core_message++;
+    else
+      self->addCounter(id).value()->core_message++;
+    // TODO
+    // if(str.contains("EKF GPS data stopped"))
+  }
 
   void helihw_tenso(PROTO p, HDR h, const VT45::Structures::HeliHW::Tenso* d)
   {

@@ -38,8 +38,8 @@ namespace HSA
     if(counter_res.has_value())
       counter = counter_res.value();
 
-    cout << left << "UAV ID COUNT: " << "\033[0;33m"  << uav_ids.size()                      << "\033[0m"
-                 << ", UAV ID USED:" << "\033[0;33m " << static_cast<i32>(uav_ids.front())   << "\033[0m"
+    cout << left << "UAV ID COUNT: " << "\033[1;35m"  << uav_ids.size()                      << "\033[0m"
+                 << ", UAV ID USED:" << "\033[1;36m " << static_cast<i32>(uav_ids.front())   << "\033[0m"
          << "\n";
     if(not counter_res.has_value())
     {
@@ -47,12 +47,16 @@ namespace HSA
       return;
     }
 
-    cout << left << setw(10) << "HELIHW"    << "\033[0;33m" << setw(8) << counter->helihw_tenso         << "\033[0m "
-         << left << setw(10) << "NAVIO"     << "\033[0;31m" << setw(8) << counter->navio_telemetry      << "\033[0m "
-         << left << setw(10) << "HELI TEL"  << "\033[0;33m" << setw(8) << counter->heli_telemetry       << "\033[0m "
-         << left << setw(10) << "HELI STAT" << "\033[0;33m" << setw(8) << counter->heli_status          << "\033[0m "
-         << left << setw(10) << "VUD"       << "\033[0;33m" << setw(8) << counter->vip_united_unitdata  << "\033[0m "
-         << left << setw(10) << "MAG TEL"   << "\033[0;33m" << setw(8) << counter->mag_telemetry        << "\033[0m "
+    cout << left << setw(9) << "ACK"       << "\033[0;32m" << setw(5) << counter->core_ack             << "\033[0m "
+         << left << setw(9) << "PARAM"     << "\033[0;32m" << setw(5) << counter->core_param           << "\033[0m "
+         << left << setw(9) << "MESSAGE"   << "\033[0;32m" << setw(5) << counter->core_message         << "\033[0m "
+         << left << setw(9) << "HELIHW"    << "\033[0;33m" << setw(5) << counter->helihw_tenso         << "\033[0m "
+         << left << setw(9) << "NAVIO"     << "\033[0;31m" << setw(5) << counter->navio_telemetry      << "\033[0m "
+         << left << setw(9) << "HELI TEL"  << "\033[0;33m" << setw(5) << counter->heli_telemetry       << "\033[0m "
+         << left << setw(9) << "HELI STT"  << "\033[0;33m" << setw(5) << counter->heli_status          << "\033[0m "
+         << "\n"
+         << left << setw(9) << "VUD"       << "\033[0;33m" << setw(5) << counter->vip_united_unitdata  << "\033[0m "
+         << left << setw(9) << "MAG TEL"   << "\033[0;33m" << setw(5) << counter->mag_telemetry        << "\033[0m "
          << "\n";
     #endif
   }
