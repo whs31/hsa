@@ -11,23 +11,44 @@
 #include "adapter.h"
 #include "dgram.h"
 #include "config/config.h"
+#include "ip/socketasio.h"
 
 #if defined(HSA_ENABLE_LOGGING)
 #include "utility/clilogger.h"
+#include <iostream>
+
+using std::cout;
+using std::endl;
 #endif
 
 static asio::io_context io_context;
 static HSA::Adapter* adapter = nullptr;
+std::unique_ptr<std::thread> t_ptr;
 
 extern "C" HSA_EXPORT void Run()
 {
-  std::thread t([]()
-  {
+  t_ptr = std::make_unique<std::thread>([](){
+    #if defined(HSA_ENABLE_LOGGING)
+    cout << "Thread detached" << endl;
+    #endif
+
     io_context.run();
+
+    #if defined(HSA_ENABLE_LOGGING)
+    cout << "Thread suspended" << endl;
+    #endif
   });
-  t.detach();
+
+  t_ptr->detach();
 }
-extern "C" HSA_EXPORT void Stop() { io_context.stop(); }
+
+extern "C" HSA_EXPORT void Stop()
+{
+  adapter->socket()->stop();
+  io_context.stop();
+  t_ptr.reset();
+}
+
 extern "C" HSA_EXPORT void CreateAdapter() { adapter = new HSA::Adapter(io_context); }
 extern "C" HSA_EXPORT void FreeAdapter() { delete adapter; adapter = nullptr; }
 extern "C" HSA_EXPORT void SetCallback(HSA_TelemetryCallback callback) { adapter->setTelemetryUnmangledCallback(callback); }

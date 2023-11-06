@@ -5,6 +5,7 @@
 #include "export/export.h"
 
 #include <iostream>
+#include <thread>
 
 void readyRead()
 {
@@ -31,6 +32,7 @@ int main(int argc, char** argv)
   std::cin.get();
   Stop();
   FreeAdapter();
+  std::this_thread::sleep_for((std::chrono::seconds(1)));
 
   return EXIT_SUCCESS;
 }

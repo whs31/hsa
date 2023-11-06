@@ -63,7 +63,7 @@ namespace HSA
     }
 
     #if defined HSA_ENABLE_LOGGING
-    CLILogger::LogAddLines(7);
+    //CLILogger::LogAddLines(7);
     #endif
   }
 
@@ -80,9 +80,9 @@ namespace HSA
       m_callback();
 
     #if defined HSA_ENABLE_LOGGING
-    CLILogger::LogClearLines(6);
-    CLILogger::LogProtocolCounters(parser());
-    CLILogger::LogTelemetry(parser());
+    //CLILogger::LogClearLines(6);
+    //CLILogger::LogProtocolCounters(parser());
+    //CLILogger::LogTelemetry(parser());
     #endif
   }
 
