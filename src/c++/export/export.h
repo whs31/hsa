@@ -6,7 +6,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-declarations"
 
-//#include <thread>
+#include <thread>
 #include "hsa.h"
 #include "adapter.h"
 #include "dgram.h"
@@ -19,7 +19,14 @@
 static asio::io_context io_context;
 static HSA::Adapter* adapter = nullptr;
 
-extern "C" HSA_EXPORT void Run() { io_context.run(); }
+extern "C" HSA_EXPORT void Run()
+{
+  std::thread t([]()
+  {
+    io_context.run();
+  });
+  t.detach();
+}
 extern "C" HSA_EXPORT void Stop() { io_context.stop(); }
 extern "C" HSA_EXPORT void CreateAdapter() { adapter = new HSA::Adapter(io_context); }
 extern "C" HSA_EXPORT void FreeAdapter() { delete adapter; adapter = nullptr; }
