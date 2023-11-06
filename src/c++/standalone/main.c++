@@ -31,6 +31,8 @@ int main(int argc, char** argv)
   CreateAdapter();
   SetCallback(readyRead);
   Run();
+  std::cin.get();
+  Stop();
   FreeAdapter();
 
   return EXIT_SUCCESS;

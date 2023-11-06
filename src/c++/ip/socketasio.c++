@@ -24,7 +24,7 @@ namespace HSA
 
   SocketASIO::~SocketASIO()
   {
-    this->stop();
+    this->SocketASIO::stop();
   }
 
   void SocketASIO::start(u16 port)
@@ -68,9 +68,7 @@ namespace HSA
   void SocketASIO::handleReceiving(const asio::error_code& error, size_t bytes_transferred)
   {
     if(not error)
-    {
       m_callback(std::string(m_buffer.data(), bytes_transferred));
-    }
     this->read();
   }
 
