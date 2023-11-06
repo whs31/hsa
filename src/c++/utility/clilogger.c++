@@ -101,7 +101,7 @@ namespace HSA
 
   void Console::EnableConsole()
   {
-    #if defined(LIBRA_OS_WINDOWS)
+    #if defined(LIBRA_OS_WINDOWS) && defined(HSA_ENABLE_LOGGING)
     AllocConsole();
 
     FILE* f;
