@@ -22,8 +22,9 @@ using std::endl;
 #endif
 
 static asio::io_context io_context;
-static HSA::Adapter* adapter = nullptr;
-std::unique_ptr<std::thread> t_ptr;
+static std::unique_ptr<HSA::Adapter> adapter;
+static std::unique_ptr<std::thread> t_ptr;
+
 
 extern "C" HSA_EXPORT void Run()
 {
@@ -37,6 +38,8 @@ extern "C" HSA_EXPORT void Run()
     #if defined(HSA_ENABLE_LOGGING)
     cout << "Thread suspended" << endl;
     #endif
+
+    t_ptr.reset();
   });
 
   t_ptr->detach();
@@ -44,13 +47,15 @@ extern "C" HSA_EXPORT void Run()
 
 extern "C" HSA_EXPORT void Stop()
 {
-  adapter->socket()->stop();
   io_context.stop();
-  t_ptr.reset();
 }
 
-extern "C" HSA_EXPORT void CreateAdapter() { adapter = new HSA::Adapter(io_context); }
-extern "C" HSA_EXPORT void FreeAdapter() { delete adapter; adapter = nullptr; }
+extern "C" HSA_EXPORT void CreateAdapter() { adapter = std::make_unique<HSA::Adapter>(io_context); }
+extern "C" HSA_EXPORT void FreeAdapter()
+{
+  adapter->socket()->stop();
+  adapter.reset();
+}
 extern "C" HSA_EXPORT void SetCallback(HSA_TelemetryCallback callback) { adapter->setTelemetryUnmangledCallback(callback); }
 extern "C" HSA_EXPORT HSA_Telemetry Read() { return adapter->telemetryUnmangled(); }
 extern "C" HSA_EXPORT void SetConfigValue(const char* key, const char* value) { adapter->config()->setValueRaw(key, value); }

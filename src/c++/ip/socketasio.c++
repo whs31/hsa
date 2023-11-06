@@ -49,6 +49,7 @@ namespace HSA
   void SocketASIO::stop()
   {
     m_socket.close();
+    //m_socket.shutdown(asio::socket_base::shutdown_type::shutdown_both);
     m_endpoint = {};
     #if defined HSA_ENABLE_LOGGING
     cout << "Closing connection" << endl;
