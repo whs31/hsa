@@ -5,7 +5,8 @@ variables:
 
 include:
   - local: /.gitlab/alse.yml
-  - local: /.gitlab/win64.yml
+  # Removed due to CI/CD non-native windows.h file
+  # - local: /.gitlab/win64.yml
 
 stages:
   - build
