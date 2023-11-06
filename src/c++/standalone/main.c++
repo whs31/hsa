@@ -24,7 +24,7 @@ int main(int argc, char** argv)
    * io_context.run();
    */
 
-  EnableConsoleLogging();
+  //EnableConsoleLogging();
   CreateAdapter();
   SetCallback(readyRead);
   Run();
