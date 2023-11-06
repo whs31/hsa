@@ -268,7 +268,7 @@ namespace HSA
     auto key_view = std::views::keys(m_counters);
     return { key_view.begin(), key_view.end() };
     #else
-    vector<ruavp::utility::UavID> ret;
+    vector<VT45::UavID> ret;
     for(const auto& [key, _] : m_counters)
       ret.push_back(key);
     return ret;
