@@ -10,6 +10,10 @@
 #include "protocol/data.h"
 #include "export/dgram.h"
 
+#if defined HSA_STANDALONE
+#include "export/export.h"
+#endif
+
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>
 #include "utility/clilogger.h"

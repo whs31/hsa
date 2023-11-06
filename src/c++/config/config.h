@@ -39,6 +39,11 @@ namespace HSA
 
       [[nodiscard]] auto value(ConfigKey) const noexcept -> expected<variant<string, u16>, ErrorCode>;
 
+      #if defined(HSA_STATIC_CONFIG)
+      void setValue(ConfigKey key, const variant<string, u16>& value) noexcept;
+      void setValueRaw(const char* key, const char* value) noexcept;
+      #endif
+
       void load() noexcept;
       void reset() noexcept;
 

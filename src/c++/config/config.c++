@@ -28,7 +28,11 @@ namespace HSA
 
   Config::Config()
   {
+    #if defined(HSA_STATIC_CONFIG)
+    this->reset();
+    #else
     this->create();
+    #endif
   }
 
   auto Config::value(ConfigKey key) const noexcept -> expected<variant<string, u16>, ErrorCode>
@@ -132,5 +136,23 @@ namespace HSA
       cout << "\tLoaded key (" << key << "), value (" << value_str << ")" << endl;
       #endif
     }
+  }
+
+  void Config::setValue(Config::ConfigKey key, const variant<string, u16>& value) noexcept
+  {
+    m_values[key] = value;
+  }
+
+  void Config::setValueRaw(const char* key, const char* value) noexcept
+  {
+    auto k = string(key);
+    auto v = string(value);
+    auto is_digit = [](char c){ return isdigit(c); };
+    variant<string, u16> var;
+    if(std::all_of(v.cbegin(), v.cend(), is_digit))
+      var = static_cast<u16>(std::stoi(v));
+    else
+      var = v;
+    this->setValue(EnumerationDictionary.inverse().at(k), var);
   }
 } // HSA

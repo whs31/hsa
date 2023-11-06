@@ -10,6 +10,7 @@
 #include "hsa.h"
 #include "adapter.h"
 #include "dgram.h"
+#include "config/config.h"
 
 static asio::io_context io_context;
 static HSA::Adapter* adapter = nullptr;
@@ -20,6 +21,7 @@ extern "C" HSA_EXPORT void CreateAdapter() { adapter = new HSA::Adapter(io_conte
 extern "C" HSA_EXPORT void FreeAdapter() { delete adapter; adapter = nullptr; }
 extern "C" HSA_EXPORT void SetCallback(HSA_TelemetryCallback callback) { adapter->setTelemetryUnmangledCallback(callback); }
 extern "C" HSA_EXPORT HSA_Telemetry Read() { return adapter->telemetryUnmangled(); }
+extern "C" HSA_EXPORT void SetConfigValue(const char* key, const char* value) { adapter->config()->setValueRaw(key, value); }
 
 extern "C" HSA_EXPORT const char* Version() { return PROJECT_VERSION; }
 extern "C" HSA_EXPORT bool IsWin32()
