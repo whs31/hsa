@@ -2,6 +2,7 @@
 // Created by whs31 on 11/3/2023.
 //
 
+#include <Libra/Platform>
 #include "clilogger.h"
 #include "protocol/protocolparser.h"
 #include "protocol/data.h"
@@ -16,6 +17,10 @@ using std::right;
 using std::left;
 using std::internal;
 using std::setw;
+#endif
+
+#if defined(LIBRA_OS_WINDOWS)
+#include <Windows.h>
 #endif
 
 constexpr const char* TERM_CLEAN_LAST_LINE = "\033[A\r\033[0K";
@@ -91,6 +96,17 @@ namespace HSA
     #if defined HSA_ENABLE_LOGGING
     for(usize i = 0; i < line_count; ++i)
       cout << "\n";
+    #endif
+  }
+
+  void Console::EnableConsole()
+  {
+    #if defined(LIBRA_OS_WINDOWS)
+    AllocConsole();
+
+    FILE* f;
+    freopen_s(&f, "CONOUT$", "w", stdout);
+    cout << "Console allocated succesfully" << endl;
     #endif
   }
 } // HSA

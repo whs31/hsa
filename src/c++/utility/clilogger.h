@@ -15,4 +15,9 @@ namespace HSA
       static void LogAddLines(int line_count);
       static void LogClearLines(int line_count);
   };
+
+  namespace Console
+  {
+    [[maybe_unused]] void EnableConsole();
+  }
 } // HSA
