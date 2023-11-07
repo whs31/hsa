@@ -25,7 +25,6 @@ static asio::io_context io_context;
 static std::unique_ptr<HSA::Adapter> adapter;
 static std::unique_ptr<std::thread> t_ptr;
 
-
 extern "C" HSA_EXPORT void Run()
 {
   t_ptr = std::make_unique<std::thread>([](){
@@ -39,7 +38,7 @@ extern "C" HSA_EXPORT void Run()
     cout << "Thread suspended" << endl;
     #endif
 
-    t_ptr.reset();
+    t_ptr.reset(nullptr);
   });
 
   t_ptr->detach();
@@ -54,7 +53,7 @@ extern "C" HSA_EXPORT void CreateAdapter() { adapter = std::make_unique<HSA::Ada
 extern "C" HSA_EXPORT void FreeAdapter()
 {
   adapter->socket()->stop();
-  adapter.reset();
+  adapter.reset(nullptr);
 }
 extern "C" HSA_EXPORT void SetCallback(HSA_TelemetryCallback callback) { adapter->setTelemetryUnmangledCallback(callback); }
 extern "C" HSA_EXPORT HSA_Telemetry Read() { return adapter->telemetryUnmangled(); }
