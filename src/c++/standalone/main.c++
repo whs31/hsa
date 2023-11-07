@@ -30,6 +30,5 @@ int main(int argc, char** argv)
       goto exit;
     goto start;
   exit:
-
-  return EXIT_SUCCESS;
+    return EXIT_SUCCESS;
 }
