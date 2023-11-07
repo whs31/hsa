@@ -28,23 +28,42 @@ static std::unique_ptr<std::thread> t_ptr;
 
 extern "C" HSA_EXPORT void Run()
 {
-  t_ptr = std::make_unique<std::thread>([](){
-    #if defined(HSA_ENABLE_LOGGING)
-    cout << "Thread detached" << endl;
-    #endif
-    io_context.run();
-    std::cout << io_context.stopped() << std::endl;
-    io_context.restart();
+
+  std::thread thr ([](){
+#if defined(HSA_ENABLE_LOGGING)
+      cout << "Thread detached" << endl;
+#endif
+      io_context.run();
+      std::cout << io_context.stopped() << std::endl;
+      io_context.restart();
       std::cout << io_context.stopped() << std::endl;
 
-    #if defined(HSA_ENABLE_LOGGING)
-    cout << "Thread suspended" << endl;
-    #endif
+#if defined(HSA_ENABLE_LOGGING)
+      cout << "Thread suspended" << endl;
+#endif
 
-    t_ptr.reset(nullptr);
+//      t_ptr.reset(nullptr);
   });
 
-  t_ptr->detach();
+  thr.detach();
+
+//  t_ptr = std::make_unique<std::thread>([](){
+//    #if defined(HSA_ENABLE_LOGGING)
+//    cout << "Thread detached" << endl;
+//    #endif
+//    io_context.run();
+//    std::cout << io_context.stopped() << std::endl;
+//    io_context.restart();
+//      std::cout << io_context.stopped() << std::endl;
+//
+//    #if defined(HSA_ENABLE_LOGGING)
+//    cout << "Thread suspended" << endl;
+//    #endif
+//
+//    t_ptr.reset(nullptr);
+//  });
+
+//  t_ptr->detach();
 }
 
 extern "C" HSA_EXPORT void Stop()
