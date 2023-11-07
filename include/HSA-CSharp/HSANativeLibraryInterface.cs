@@ -1,11 +1,12 @@
 using System;
 using System.Runtime.InteropServices;
+using UnityEngine;
 
-namespace HSA
+namespace HSF.Interop
 {
-    public class AdapterInterface
+    public static class AdapterInterface
     {
-        internal class NativeLibraryInterface
+        internal static class NativeLibraryInterface
         {
             [UnmanagedFunctionPointer(CallingConvention.StdCall)] 
             public delegate void HSA_TelemetryCallback();
@@ -13,19 +14,19 @@ namespace HSA
             [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)] 
             public struct HSA_Telemetry
             {
-                double latitude;
-                double longitude;
-                float altitude;
+                public double latitude;
+                public double longitude;
+                public float altitude;
             }
             
-            [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] 
-            public static extern void SetCallback(HSA_TelemetryCallback callback);
             
-            [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] public static extern void Run();
+            [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] 
+            public static extern void Run([MarshalAs(UnmanagedType.FunctionPtr)] HSA_TelemetryCallback callback);
             [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] public static extern void Stop();
-            [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] public static extern void CreateAdapter();
-            [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] public static extern void FreeAdapter();
+            
             [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] public static extern HSA_Telemetry Read();
+            // @TODO set config value
+            [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] public static extern void EnableConsoleLogging();
 
             [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] public static extern bool IsWin32();
             [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] public static extern bool IsPOSIX();
@@ -37,6 +38,13 @@ namespace HSA
             Win32, 
             POSIX, 
             Unknown
+        }
+        
+        public struct Telemetry
+        {
+            public double Latitude;
+            public double Longitude;
+            public float Altitude;
         }
 
         public static NativePlatform Platform()
@@ -50,19 +58,34 @@ namespace HSA
 
         public static string Version() { return Marshal.PtrToStringAnsi(NativeLibraryInterface.Version()); }
         
-        public static void Start()
+        public static void Start(Action on_ready_read)
         {
-            NativeLibraryInterface.HSA_TelemetryCallback callback = () => Console.WriteLine("Ready read!");
+            //NativeLibraryInterface.EnableConsoleLogging();
+            void Callback()
+            {
+                var telemetry = AdapterInterface.ReadPacket();
+                Debug.Log($"Lat: {telemetry.Latitude}, Lon: {telemetry.Longitude}, Alti: {telemetry.Altitude}");
+            }
+            //on_ready_read();
             
-            NativeLibraryInterface.CreateAdapter();
-            NativeLibraryInterface.SetCallback(callback);
-            NativeLibraryInterface.Run();
+            NativeLibraryInterface.Run(Callback);
+            Debug.Log("<b>HSA Started.</b>");
         }
         
         public static void Stop()
         {
             NativeLibraryInterface.Stop();
-            NativeLibraryInterface.FreeAdapter();
+		    Debug.Log("<b>HSA Stopped.</b>");
+        }
+        
+        public static Telemetry ReadPacket()
+        {
+            var raw = NativeLibraryInterface.Read();
+            Telemetry ret;
+            ret.Latitude = raw.latitude;
+            ret.Longitude = raw.longitude;
+            ret.Altitude = raw.altitude;
+            return ret;
         }
     }
-} // HSA
+} // HS.Interop
