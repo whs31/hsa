@@ -6,6 +6,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-declarations"
 
+#include <memory>
 #include <thread>
 #include "hsa.h"
 #include "adapter.h"
@@ -22,43 +23,38 @@ using std::endl;
 #endif
 
 static asio::io_context io_context;
-static unique_ptr<HSA::Adapter> adapter;
-static unique_ptr<std::thread> t_ptr;
+static HSA::Adapter adapter(io_context);
 
-extern "C" HSA_EXPORT void Run()
+extern "C" HSA_EXPORT void Stop()
 {
-  t_ptr = std::make_unique<std::thread>([](){
+  io_context.stop();
+  adapter.stop();
+}
+
+extern "C" HSA_EXPORT void Run(HSA_TelemetryCallback callback)
+{
+  adapter.setTelemetryUnmangledCallback(callback);
+  adapter.start();
+  std::thread t ([](){
+
     #if defined(HSA_ENABLE_LOGGING)
     cout << "Thread detached" << endl;
     #endif
 
     asio::executor_work_guard<decltype(io_context.get_executor())> work_guard(io_context.get_executor());
     io_context.run();
+    io_context.restart();
 
     #if defined(HSA_ENABLE_LOGGING)
     cout << "Thread suspended" << endl;
     #endif
-
-    t_ptr.reset(nullptr);
   });
 
-  t_ptr->detach();
+  t.detach();
 }
 
-extern "C" HSA_EXPORT void Stop()
-{
-  io_context.stop();
-}
-
-extern "C" HSA_EXPORT void CreateAdapter() { adapter = std::make_unique<HSA::Adapter>(io_context); }
-extern "C" HSA_EXPORT void FreeAdapter()
-{
-  adapter->socket()->stop();
-  adapter.reset(nullptr);
-}
-extern "C" HSA_EXPORT void SetCallback(HSA_TelemetryCallback callback) { adapter->setTelemetryUnmangledCallback(callback); }
-extern "C" HSA_EXPORT HSA_Telemetry Read() { return adapter->telemetryUnmangled(); }
-extern "C" HSA_EXPORT void SetConfigValue(const char* key, const char* value) { adapter->config()->setValueRaw(key, value); }
+extern "C" HSA_EXPORT HSA_Telemetry Read() { return adapter.telemetryUnmangled(); }
+extern "C" HSA_EXPORT void SetConfigValue(const char* key, const char* value) { adapter.config()->setValueRaw(key, value); }
 extern "C" HSA_EXPORT void EnableConsoleLogging() {
   #if defined(HSA_ENABLE_LOGGING)
   HSA::Console::EnableConsole();

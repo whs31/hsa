@@ -50,21 +50,6 @@ namespace HSA
 
     m_socket = std::make_unique<SocketASIO>([this](auto&& PH1) { this->socketRead(std::forward<decltype(PH1)>(PH1)); },
                                             context);
-    try
-    {
-      socket()->start(std::get<u16>(config()->value(Config::VT45ListenPort).value()));
-      socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));
-    }
-    catch(const std::exception& e)
-    {
-      #if defined HSA_ENABLE_LOGGING
-      cerr << e.what() << endl;
-      #endif
-    }
-
-    #if defined HSA_ENABLE_LOGGING
-    //CLILogger::LogAddLines(7);
-    #endif
   }
 
   Adapter::~Adapter() = default;
@@ -96,4 +81,28 @@ namespace HSA
   }
 
   void Adapter::setTelemetryUnmangledCallback(Adapter::DataReadyCallback c) { m_callback = std::move(c); }
+
+  void Adapter::start()
+  {
+    try
+    {
+      socket()->start(std::get<u16>(config()->value(Config::VT45ListenPort).value()));
+      socket()->joinMulticastGroup(std::get<string>(config()->value(Config::VT45MulticastGroup).value()));
+    }
+    catch(const std::exception& e)
+    {
+      #if defined HSA_ENABLE_LOGGING
+      cerr << e.what() << endl;
+      #endif
+    }
+
+    #if defined HSA_ENABLE_LOGGING
+    //CLILogger::LogAddLines(7);
+    #endif
+  }
+
+  void Adapter::stop()
+  {
+    socket()->stop();
+  }
 } // HSA

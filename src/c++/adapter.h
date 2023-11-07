@@ -26,6 +26,9 @@ namespace HSA
       Adapter(asio::io_context& context, DataReadyCallback callback = {});
       ~Adapter();
 
+      void start();
+      void stop();
+
       [[nodiscard]] Config* config() const;
       [[nodiscard]] ISocket* socket() const;
       [[nodiscard]] ProtocolParser* parser() const;
