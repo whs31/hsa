@@ -18,7 +18,7 @@ namespace HSA
 {
   SocketASIO::SocketASIO(ISocket::SocketReceiveCallback callback, asio::io_context& context)
     : m_callback(std::move(callback))
-    , m_socket(context, asio::ip::udp::endpoint(asio::ip::udp::v4(), 0))
+    , m_socket(context, asio::ip::udp::endpoint())
     , m_endpoint(m_socket.local_endpoint())
   {}
 

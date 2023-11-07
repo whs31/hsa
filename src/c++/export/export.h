@@ -23,64 +23,37 @@ using std::endl;
 #endif
 
 static asio::io_context io_context;
-static std::unique_ptr<HSA::Adapter> adapter;
-static std::unique_ptr<std::thread> t_ptr;
-
-extern "C" HSA_EXPORT void Run()
-{
-
-  std::thread thr ([](){
-#if defined(HSA_ENABLE_LOGGING)
-      cout << "Thread detached" << endl;
-#endif
-      io_context.run();
-      std::cout << io_context.stopped() << std::endl;
-      io_context.restart();
-      std::cout << io_context.stopped() << std::endl;
-
-#if defined(HSA_ENABLE_LOGGING)
-      cout << "Thread suspended" << endl;
-#endif
-
-//      t_ptr.reset(nullptr);
-  });
-
-  thr.detach();
-
-//  t_ptr = std::make_unique<std::thread>([](){
-//    #if defined(HSA_ENABLE_LOGGING)
-//    cout << "Thread detached" << endl;
-//    #endif
-//    io_context.run();
-//    std::cout << io_context.stopped() << std::endl;
-//    io_context.restart();
-//      std::cout << io_context.stopped() << std::endl;
-//
-//    #if defined(HSA_ENABLE_LOGGING)
-//    cout << "Thread suspended" << endl;
-//    #endif
-//
-//    t_ptr.reset(nullptr);
-//  });
-
-//  t_ptr->detach();
-}
+static HSA::Adapter adapter(io_context);
 
 extern "C" HSA_EXPORT void Stop()
 {
   io_context.stop();
-//    std::cout << io_context.stopped() << std::endl;
+  adapter.stop();
 }
 
-extern "C" HSA_EXPORT void CreateAdapter() { adapter = std::make_unique<HSA::Adapter>(io_context); }
-extern "C" HSA_EXPORT void FreeAdapter()
+extern "C" HSA_EXPORT void Run(HSA_TelemetryCallback callback)
 {
-  adapter->socket()->stop();
-  adapter.reset(nullptr);
+  adapter.setTelemetryUnmangledCallback(callback);
+  adapter.start();
+  std::thread t ([](){
+
+    #if defined(HSA_ENABLE_LOGGING)
+    cout << "Thread detached" << endl;
+    #endif
+
+    io_context.run();
+    io_context.restart();
+
+    #if defined(HSA_ENABLE_LOGGING)
+    cout << "Thread suspended" << endl;
+    #endif
+  });
+
+  t.detach();
 }
-extern "C" HSA_EXPORT void SetCallback(HSA_TelemetryCallback callback) { adapter->setTelemetryUnmangledCallback(callback); }
-extern "C" HSA_EXPORT HSA_Telemetry Read() { return adapter->telemetryUnmangled(); }
-extern "C" HSA_EXPORT void SetConfigValue(const char* key, const char* value) { adapter->config()->setValueRaw(key, value); }
+
+extern "C" HSA_EXPORT HSA_Telemetry Read() { return adapter.telemetryUnmangled(); }
+extern "C" HSA_EXPORT void SetConfigValue(const char* key, const char* value) { adapter.config()->setValueRaw(key, value); }
 extern "C" HSA_EXPORT void EnableConsoleLogging() {
   #if defined(HSA_ENABLE_LOGGING)
   HSA::Console::EnableConsole();

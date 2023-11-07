@@ -19,27 +19,17 @@ int main(int argc, char** argv)
   std::cout << "HSA version " << PROJECT_VERSION << " started." << std::endl;
   #endif
 
-  /*
-   * thread_local asio::io_context io_context;
-   * thread_local HSA::Adapter adapter(io_context);
-   * io_context.run();
-   */
-
-  //EnableConsoleLogging();
-  CreateAdapter();
-  SetCallback(readyRead);
-  Run();
-  std::cin.get();
-  Stop();
-  FreeAdapter();
-  std::cin.get();
-  CreateAdapter();
-  SetCallback(readyRead);
-  Run();
-  std::cin.get();
-  Stop();
-  FreeAdapter();
-  std::this_thread::sleep_for((std::chrono::seconds(10)));
+  std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+  start:
+    Run(readyRead);
+    std::cin.get();
+    Stop();
+    char c;
+    std::cin.get(c);
+    if(c == 'b')
+      goto exit;
+    goto start;
+  exit:
 
   return EXIT_SUCCESS;
 }
