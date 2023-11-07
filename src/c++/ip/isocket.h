@@ -19,6 +19,8 @@ namespace HSA
     public:
       using SocketReceiveCallback = std::function<void (string data)>;
 
+      virtual ~ISocket() = default;
+
       virtual void start(u16 port) = 0;
       virtual void stop() = 0;
       virtual void send(const string& data) = 0;

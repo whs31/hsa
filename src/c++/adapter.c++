@@ -16,6 +16,7 @@
 
 #if defined HSA_ENABLE_LOGGING
 #include <iostream>
+#include <utility>
 #include "utility/clilogger.h"
 
 using std::cout;
@@ -28,7 +29,7 @@ namespace HSA
   Adapter::Adapter(asio::io_context& context, DataReadyCallback callback)
     : m_config(std::make_unique<Config>())
     , m_protocol_parser(std::make_unique<ProtocolParser>())
-    , m_callback(callback)
+    , m_callback(std::move(callback))
   {
     if(not config()->value(Config::VT45ListenPort))
     {
@@ -50,6 +51,9 @@ namespace HSA
 
     m_socket = std::make_unique<SocketASIO>([this](auto&& PH1) { this->socketRead(std::forward<decltype(PH1)>(PH1)); },
                                             context);
+    #if defined HSA_ENABLE_LOGGING
+    CLILogger::LogAddLines(7);
+    #endif
   }
 
   Adapter::~Adapter() = default;
@@ -65,9 +69,9 @@ namespace HSA
       m_callback();
 
     #if defined HSA_ENABLE_LOGGING
-    //CLILogger::LogClearLines(6);
-    //CLILogger::LogProtocolCounters(parser());
-    //CLILogger::LogTelemetry(parser());
+    CLILogger::LogClearLines(6);
+    CLILogger::LogProtocolCounters(parser());
+    CLILogger::LogTelemetry(parser());
     #endif
   }
 
@@ -95,10 +99,6 @@ namespace HSA
       cerr << e.what() << endl;
       #endif
     }
-
-    #if defined HSA_ENABLE_LOGGING
-    //CLILogger::LogAddLines(7);
-    #endif
   }
 
   void Adapter::stop()
