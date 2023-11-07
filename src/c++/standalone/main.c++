@@ -29,16 +29,20 @@ int main(int argc, char** argv)
   CreateAdapter();
   SetCallback(readyRead);
   Run();
+
   std::cin.get();
   Stop();
   FreeAdapter();
+
   std::cin.get();
   CreateAdapter();
   SetCallback(readyRead);
   Run();
+
   std::cin.get();
   Stop();
   FreeAdapter();
+
   std::this_thread::sleep_for((std::chrono::seconds(10)));
 
   return EXIT_SUCCESS;

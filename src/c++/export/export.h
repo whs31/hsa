@@ -22,8 +22,8 @@ using std::endl;
 #endif
 
 static asio::io_context io_context;
-static std::unique_ptr<HSA::Adapter> adapter;
-static std::unique_ptr<std::thread> t_ptr;
+static unique_ptr<HSA::Adapter> adapter;
+static unique_ptr<std::thread> t_ptr;
 
 extern "C" HSA_EXPORT void Run()
 {
@@ -32,6 +32,7 @@ extern "C" HSA_EXPORT void Run()
     cout << "Thread detached" << endl;
     #endif
 
+    asio::executor_work_guard<decltype(io_context.get_executor())> work_guard(io_context.get_executor());
     io_context.run();
 
     #if defined(HSA_ENABLE_LOGGING)
