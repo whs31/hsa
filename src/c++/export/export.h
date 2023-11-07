@@ -41,6 +41,7 @@ extern "C" HSA_EXPORT void Run(HSA_TelemetryCallback callback)
     cout << "Thread detached" << endl;
     #endif
 
+    asio::executor_work_guard<decltype(io_context.get_executor())> work_guard(io_context.get_executor());
     io_context.run();
     io_context.restart();
 
