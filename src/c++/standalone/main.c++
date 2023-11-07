@@ -10,6 +10,7 @@
 void readyRead()
 {
   auto a = Read();
+  std::cout << a.latitude << " " << a.longitude << " " << a.altitude << std::endl;
 }
 
 int main(int argc, char** argv)

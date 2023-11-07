@@ -6,19 +6,18 @@ namespace HSF.Interop
 {
     public static class AdapterInterface
     {
+        [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)] 
+        public struct HSA_Telemetry
+        {
+            public double latitude;
+            public double longitude;
+            public float altitude;
+        }
+        
         internal static class NativeLibraryInterface
         {
             [UnmanagedFunctionPointer(CallingConvention.StdCall)] 
             public delegate void HSA_TelemetryCallback();
-
-            [StructLayout(LayoutKind.Sequential, CharSet = CharSet.Ansi)] 
-            public struct HSA_Telemetry
-            {
-                public double latitude;
-                public double longitude;
-                public float altitude;
-            }
-            
             
             [DllImport("HSA", CallingConvention = CallingConvention.Cdecl)] 
             public static extern void Run([MarshalAs(UnmanagedType.FunctionPtr)] HSA_TelemetryCallback callback);
@@ -39,53 +38,35 @@ namespace HSF.Interop
             POSIX, 
             Unknown
         }
-        
-        public struct Telemetry
-        {
-            public double Latitude;
-            public double Longitude;
-            public float Altitude;
-        }
 
         public static NativePlatform Platform()
         {
-            if (NativeLibraryInterface.IsWin32())
-                return NativePlatform.Win32;
-            else if (NativeLibraryInterface.IsPOSIX())
-                return NativePlatform.POSIX;
-            return NativePlatform.Unknown;
+            return NativeLibraryInterface.IsWin32() ? NativePlatform.Win32 : NativeLibraryInterface.IsPOSIX() 
+                                                    ? NativePlatform.POSIX : NativePlatform.Unknown;
         }
 
         public static string Version() { return Marshal.PtrToStringAnsi(NativeLibraryInterface.Version()); }
         
-        public static void Start(Action on_ready_read)
+        public static void BeginReceiving(Action onReadyRead)
         {
-            //NativeLibraryInterface.EnableConsoleLogging();
-            void Callback()
+            NativeLibraryInterface.Run(() =>
             {
-                var telemetry = AdapterInterface.ReadPacket();
-                Debug.Log($"Lat: {telemetry.Latitude}, Lon: {telemetry.Longitude}, Alti: {telemetry.Altitude}");
-            }
-            //on_ready_read();
-            
-            NativeLibraryInterface.Run(Callback);
-            Debug.Log("<b>HSA Started.</b>");
+                // Debug.Log($"Null? {onReadyRead == null}");
+                onReadyRead?.Invoke();
+            });
+            Debug.Log("<b>HSA Adapter Started.</b>");
         }
         
-        public static void Stop()
+        public static void EndReceiving()
         {
             NativeLibraryInterface.Stop();
-		    Debug.Log("<b>HSA Stopped.</b>");
+		    Debug.Log("<b>HSA Adapter Stopped.</b>");
         }
         
-        public static Telemetry ReadPacket()
+        public static HSA_Telemetry ReadPacket()
         {
-            var raw = NativeLibraryInterface.Read();
-            Telemetry ret;
-            ret.Latitude = raw.latitude;
-            ret.Longitude = raw.longitude;
-            ret.Altitude = raw.altitude;
-            return ret;
+            var telemetry = NativeLibraryInterface.Read();
+            return telemetry;
         }
     }
 } // HS.Interop
