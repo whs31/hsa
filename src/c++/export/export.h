@@ -6,6 +6,7 @@
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wmissing-declarations"
 
+#include <memory>
 #include <thread>
 #include "hsa.h"
 #include "adapter.h"
@@ -31,8 +32,10 @@ extern "C" HSA_EXPORT void Run()
     #if defined(HSA_ENABLE_LOGGING)
     cout << "Thread detached" << endl;
     #endif
-
     io_context.run();
+    std::cout << io_context.stopped() << std::endl;
+    io_context.restart();
+      std::cout << io_context.stopped() << std::endl;
 
     #if defined(HSA_ENABLE_LOGGING)
     cout << "Thread suspended" << endl;
@@ -47,6 +50,7 @@ extern "C" HSA_EXPORT void Run()
 extern "C" HSA_EXPORT void Stop()
 {
   io_context.stop();
+//    std::cout << io_context.stopped() << std::endl;
 }
 
 extern "C" HSA_EXPORT void CreateAdapter() { adapter = std::make_unique<HSA::Adapter>(io_context); }
