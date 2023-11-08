@@ -49,7 +49,7 @@ namespace HSA
 
     m_values[VT45IPv4] = "192.168.0.13"s;
     m_values[VT45Port] = 4556_u16;
-    m_values[VT45ListenPort] = 4557_u16;
+    m_values[VT45ListenPort] = 55503_u16;
     m_values[VT45MulticastGroup] = "224.0.0.1";
 
     #if defined HSA_ENABLE_LOGGING
