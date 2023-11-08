@@ -10,6 +10,7 @@
 #include <bidirectional_map>
 #include <Libra/Global>
 #include <Libra/Expected>
+#include "utility/errorcodes.h"
 
 using std::variant;
 using std::string;
@@ -29,15 +30,9 @@ namespace HSA
         VT45MulticastGroup
       };
 
-      enum class ErrorCode
-      {
-        InvalidKey,
-        UnknownError
-      };
-
       Config();
 
-      [[nodiscard]] auto value(ConfigKey) const noexcept -> expected<variant<string, u16>, ErrorCode>;
+      [[nodiscard]] auto value(ConfigKey) const noexcept -> expected<variant<string, u16>, std::error_code>;
 
       #if defined(HSA_STATIC_CONFIG)
       void setValue(ConfigKey key, const variant<string, u16>& value) noexcept;

@@ -35,10 +35,10 @@ namespace HSA
     #endif
   }
 
-  auto Config::value(ConfigKey key) const noexcept -> expected<variant<string, u16>, ErrorCode>
+  auto Config::value(ConfigKey key) const noexcept -> expected<variant<string, u16>, std::error_code>
   {
     if(not m_values.contains(key))
-      return unexpected(ErrorCode::InvalidKey);
+      return unexpected(ErrorCode::NoSuchKey);
     return m_values.at(key);
   }
 

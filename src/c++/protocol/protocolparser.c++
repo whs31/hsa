@@ -245,17 +245,17 @@ namespace HSA
   }
 
   // I guarantee that this pointer is valid!
-  auto ProtocolParser::counter(VT45::UavID id) -> expected<Counter*, HashtableAccessError>
+  auto ProtocolParser::counter(VT45::UavID id) -> expected<Counter*, std::error_code>
   {
     if(not m_counters.contains(id))
-      return unexpected(HashtableAccessError::NoSuchKey);
+      return unexpected(ErrorCode::NoSuchKey);
     return &(m_counters[id]);
   }
 
-  auto ProtocolParser::addCounter(VT45::UavID id) -> expected<Counter*, HashtableAccessError>
+  auto ProtocolParser::addCounter(VT45::UavID id) -> expected<Counter*, std::error_code>
   {
     if(m_counters.contains(id))
-      return unexpected(HashtableAccessError::KeyAlreadyPersistsAtCreation);
+      return unexpected(ErrorCode::KeyAlreadyPersistsAtCreation);
     m_counters.emplace(std::piecewise_construct, std::forward_as_tuple(id), std::forward_as_tuple());
     return counter(id);
   }

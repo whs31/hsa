@@ -53,6 +53,7 @@ target_sources(${PROJECT_NAME}
     src/c++/utility/enumutils.h
     src/c++/utility/clilogger.h
     src/c++/utility/clilogger.c++
+    src/c++/utility/errorcodes.h
 )
 
 if(HSA_STANDALONE)

@@ -15,6 +15,7 @@
 #include <vector>
 #include <Libra/Expected>
 #include "ruavputility.h"
+#include "utility/errorcodes.h"
 
 using std::string;
 using std::unique_ptr;
@@ -28,13 +29,6 @@ namespace HSA
   class ProtocolParser
   {
     public:
-      enum class HashtableAccessError
-      {
-        NoSuchKey,
-        KeyAlreadyPersistsAtCreation,
-        Unknown
-      };
-
       struct Counter
       {
         Counter();
@@ -62,8 +56,8 @@ namespace HSA
 
       [[nodiscard]] Data* datagram() const;
       [[nodiscard]] VT45::Structures::Protocol* protocol() const;
-      [[nodiscard]] auto counter(VT45::UavID id) -> expected<Counter*, HashtableAccessError>;
-      [[nodiscard]] auto addCounter(VT45::UavID id) -> expected<Counter*, HashtableAccessError>;
+      [[nodiscard]] auto counter(VT45::UavID id) -> expected<Counter*, std::error_code>;
+      [[nodiscard]] auto addCounter(VT45::UavID id) -> expected<Counter*, std::error_code>;
 
       [[nodiscard]] auto uavIDList() const -> vector<VT45::UavID>;
 
