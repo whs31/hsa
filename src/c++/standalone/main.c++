@@ -11,7 +11,12 @@
 void readyRead()
 {
   auto a = Read();
-  std::cout << a.latitude << " " << a.longitude << " " << a.altitude << std::endl;
+  std::cout << a.latitude << " " << a.longitude << " " << a.altitude << " " << a.altitude_abs << " "
+            << a.col_pitch << " " << a.pitch << " " << a.roll << " " << a.yaw << " " << a.throttle << " "
+            << a.vx << " " << a.vy << " " << a.vz << " " << a.rpm_engine << " " << a.rpm_rotor << " "
+            << a.rpm_tail << " " << a.engine_state << " " << a.autopilot_mode
+            << " " << a.altitude_barometric << " " << a.altitude_gps << " " << a.altitude_radio
+            << std::endl;
 }
 
 int main(int argc, char** argv)

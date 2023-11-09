@@ -80,7 +80,24 @@ namespace HSA
     return {
       .latitude = this->parser()->datagram()->telemetry.latitude,
       .longitude = this->parser()->datagram()->telemetry.longitude,
-      .altitude = this->parser()->datagram()->telemetry.altitude
+      .altitude = this->parser()->datagram()->telemetry.altitude,
+      .altitude_abs = this->parser()->datagram()->telemetry.altitude_abs,
+      .col_pitch = this->parser()->datagram()->telemetry.colpitch,
+      .pitch = this->parser()->datagram()->telemetry.pitch,
+      .roll = this->parser()->datagram()->telemetry.roll,
+      .yaw = this->parser()->datagram()->telemetry.yaw,
+      .throttle = this->parser()->datagram()->telemetry.throttle,
+      .vx = this->parser()->datagram()->telemetry.vx,
+      .vy = this->parser()->datagram()->telemetry.vy,
+      .vz = this->parser()->datagram()->telemetry.vz,
+      .rpm_engine = static_cast<f32>(this->parser()->datagram()->telemetry.rpm_engine),
+      .rpm_rotor = static_cast<f32>(this->parser()->datagram()->telemetry.rpm_rotor),
+      .rpm_tail = static_cast<f32>(this->parser()->datagram()->telemetry.rpm_tail),
+      .engine_state = this->parser()->datagram()->telemetry.engine_state,
+      .autopilot_mode = this->parser()->datagram()->telemetry.mode,
+      .altitude_barometric = this->parser()->parseSecondaryTelemetry() ? this->parser()->datagram()->secondaryTelemetry.value().altitude_baro : .0f,
+      .altitude_gps = this->parser()->parseSecondaryTelemetry() ? this->parser()->datagram()->secondaryTelemetry.value().altitude_gps : .0f,
+      .altitude_radio = this->parser()->parseSecondaryTelemetry() ? this->parser()->datagram()->secondaryTelemetry.value().altitude_radio : .0f,
     };
   }
 
